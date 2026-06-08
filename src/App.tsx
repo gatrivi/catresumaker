@@ -51,6 +51,7 @@ export default function App() {
   const [apiConnected, setApiConnected] = useState<boolean | null>(null);
   const [connectionLatency, setConnectionLatency] = useState<number | null>(null);
   const [isCheckingConnection, setIsCheckingConnection] = useState(false);
+  const [isSlowWakeup, setIsSlowWakeup] = useState(false);
 
   // Internationalization settings
   const browserLang = navigator.language.startsWith('es') ? 'es' : 'en';
@@ -124,7 +125,14 @@ export default function App() {
   // Check health and measure latency with the backend
   const verifySystemConnectivity = async () => {
     setIsCheckingConnection(true);
+    setIsSlowWakeup(false);
     const startTime = performance.now();
+    
+    // Set a timer to detect slow connection (e.g. 2.5 seconds)
+    const slowTimer = setTimeout(() => {
+      setIsSlowWakeup(true);
+    }, 2500);
+
     try {
       const res = await fetch("/api/health");
       const data = await res.json();
@@ -135,6 +143,8 @@ export default function App() {
       setApiConnected(false);
       setConnectionLatency(null);
     } finally {
+      clearTimeout(slowTimer);
+      setIsSlowWakeup(false);
       setIsCheckingConnection(false);
     }
   };
@@ -333,6 +343,23 @@ export default function App() {
           >
             {t.gotIt}
           </button>
+        </div>
+      )}
+
+      {/* Render Server Sleep Tier Wakeup Warning */}
+      {isSlowWakeup && (
+        <div className="bg-gradient-to-r from-amber-600 via-amber-750 to-amber-600 text-white py-2.5 px-4 text-xs font-semibold flex flex-col sm:flex-row gap-2 justify-between items-center no-print shadow-lg tracking-wide animate-in slide-in-from-top duration-300 z-50 border-b border-amber-500/30">
+          <div className="flex items-center gap-2">
+            <span className="animate-spin text-amber-200 font-mono inline-block">☕</span>
+            <span>
+              {lang === 'es'
+                ? "El servidor alojado en Render está despertando (Tasa Gratuita) — Esto toma unos 50 s. ¡Gracias por tu paciencia!"
+                : "Render Free-Tier Server is waking up from sleep — This process takes about ~50 seconds initially. Thank you for your patience!"}
+            </span>
+          </div>
+          <span className="text-[9px] bg-amber-900/60 uppercase tracking-widest px-2 py-0.5 rounded text-amber-200 font-bold">
+            {lang === 'es' ? "DESPERTANDO SERVIDOR" : "WARMING UP ENGINE"}
+          </span>
         </div>
       )}
 
