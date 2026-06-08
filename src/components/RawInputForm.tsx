@@ -95,29 +95,60 @@ export default function RawInputForm({ onSuccess, lang = 'en' }: RawInputFormPro
   };
 
   const handleLoadSamplePaste = () => {
-    if (lang === 'es') {
-      setRawText(`Bastián Vance
-Bastián Tech S.L.
-bastian.vance@devmail.org  |  (321) 900-2009
+    // Replace the demo text with the user's real CV so the app works even when Gemini is temporarily unavailable.
+    setRawText(`## Gaston Alejandro Trivi
+**React Developer · Medical Interpreter · Production-Shipper**
+📍 Olivos, Buenos Aires | 📧 gatrivi.dev@gmail.com | 📞 +54 11 5619-9363
+🌐 devtrivi.gatrivi.com
+💼 linkedin.com/in/gatrivi
+💻 github.com/gatrivi
+---
+### Professional Summary
+"I already knew how to build — this app taught me I could be responsible for production."
+Skilled React developer and seasoned medical interpreter who builds production-hardened applications. Creator of CatIntAssist, a real-time interpreter workspace utilized daily to earn a living; this forced a ruthless prioritization of stability, speed, and zero-downtime deployments. Adept at integrating AI APIs, local LLMs, and robust backend services into highly optimized, fault-tolerant user interfaces.
+Open for full-stack or frontend roles where reliability matters and downtime is not an option.
+---
+### Technical Skills
+**Frontend**: React 19, TypeScript, Vite 6, Tailwind CSS v4, Framer Motion, HTML5/CSS3  
+**Backend & APIs**: Node.js, REST APIs, Deepgram, Google Translate, Gemini API, Vercel Functions  
+**Tools & Platforms**: Git, Vercel, Netlify, kvdb.io, idb-keyval, CI/CD  
+**Design & UI**: UI/UX, Responsive Design, Glassmorphism, Dark Mode
+---
+### Work Experience
+**Founding Developer & End User** | CatIntAssist (Self-built Production Tool) | 2024 — Present
+- Production Engineering: Built and shipped a real-time medical interpreter dashboard used daily in live clinical sessions. Acted as both developer and primary user.
+- Zero-Downtime Deployments: Developed a safe deploy workflow with atomic changes and rollback plans, achieving zero breaking releases in 12+ months.
+- Incident Response & API Management: Handled full-stack incident response without a dedicated ops team; managed API costs and rate limits.
+- UX Iteration: Debugged under pressure during active interpreting calls to identify session-fatal issues.
 
-Biografía: Soy Bastián. Construyo sistemas backend de alto tráfico. Actualmente trabajo como ingeniero backend en AppStream Tech instalados en Vigo desde marzo de 2023. En AppStream, construí una cola de procesamiento web distribuida en Node.js capaz de manejar más de 1500 consultas simultáneas sin errores, mejorando el rendimiento global por 30 por ciento. Ayudé con la configuración de Docker e introduje normativas de ESLint para todo el equipo de ingeniería.
+**Web & React Developer** | Zengasoft | 03/2023 – Present
+- Developed advanced medical intake forms and questionnaires with React conditional logic to improve accuracy and insights.
+- Architected HIPAA-compliant data infrastructure and reporting for private medical data.
+- Migrated websites to optimized hosting platforms and configured CI/CD pipelines, reducing page load times by up to 40%.
 
-Antes de eso, estudié en la Universidad y me gradué en 2021 de Licenciado en Informática. Durante la carrera estuve a tiempo parcial como desarrollador en StreamCast en Redmond desde enero de 2021 hasta febrero de 2023. Programé con javascript vainilla, armé herramientas integras de control y migré un antiguo panel JQuery a React 18, depurando más de 20 fallos de interfaz críticos.
+**Medical Interpreter** | Freelance / Contract | 2020 — Present
+- Provided bilingual medical interpretation in high-acuity clinical settings; familiar with medical terminology and HIPAA-adjacent workflows.
+- Optimized workflows that directly shaped the product requirements for CatIntAssist.
 
-Mis habilidades son: JS, TypeScript, NodeJS, ExpressJS, Docker, AWS S3, Redis, PostgreSQL, Jest, Git.
-Idiomas hablados: Español (Nativo), Inglés (C1).`);
-    } else {
-      setRawText(`Bastian Vance
-Bastada Eng Corp
-bastada@devmail.org  |  (321) 900-2009
-
-Summary: I'm Bastian. I build high-volume backends. I currently work as a senior backend engineer at AppStream Tech in Seattle since March 2023. At AppStream, I built a brand new web-scraping queue in Node.js that processes over 1500 concurrent items without failing and improved speeds by 30 percent. Also helped setup our Docker container setup, and introduced team-wide ESLint settings for better code reviews.
-
-Before this, I studied at the University of Washington and graduated in 2021 with a BS in Computer Science. During college I was a part-time developer at StreamCast in Redmond from Jan 2021 to Feb 2023. There I wrote vanilla javascript, built internal tools, helped migrate an old jQuery app to React, and fixed about 20 critical UI bugs that clients reported.
-
-Skills I have: JS, TypeScript, NodeJS, ExpressJS, Docker, AWS S3, Redis, PostgreSQL, Jest for testing, Git.
-Spoken languages: English and German.`);
-    }
+**Javascript Tutor** | Preply | 10/2022 – Present
+- Mentored students through advanced JS bootcamps and helped them secure professional developer roles.
+---
+### Featured Projects
+- CatIntAssist (catintassist.gatrivi.com): AI-powered medical interpreter workspace (real-time transcription/translation + productivity tooling).
+- Tmm Store (GitHub: github.com/gatrivi/Tmm-store): Zero-backend WhatsApp ordering SPA with Stripe/MercadoPago integration.
+- Cathedral (cathedral.gatrivi.com): AI-augmented liturgical prayer companion using Gemini + Piper TTS.
+- CatReader (GitHub: github.com/gatrivi/catreader): Cross-device PDF/TXT reader with zero-auth sync and Gemini OCR enrichment.
+- Rosario Cards (rosario.gatrivi.com): Interactive digital rosary with airplane-mode offline focus.
+- Catpholio1 (devtrivi.gatrivi.com | GitHub: github.com/gatrivi/Catpholio1): Multi-route React 19 portfolio/store engine.
+---
+### Advanced Engineering & AI Workflows
+- Mobile-to-Desktop Remote Architecture: Tailscale + Termius/SSH to manage CLI-based AI agents.
+- Local AI & LLM Deployment: Ollama + LM Studio with optimized VRAM usage on 16GB RX 6600.
+- WSL Audio Synthesis: Piper-TTS / Omnivoice for ultra-low latency TTS pipelines.
+-
+### Education
+**Full Stack Web Development Bootcamp** | Plataforma 5 | 03/2021 – 05/2021
+- 700+ hour program covering modern PERN stack application development.`);
   };
 
   const CONSTANT_IDEAS = [
