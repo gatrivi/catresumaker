@@ -28,6 +28,14 @@ import LogUpdateForm from "./components/LogUpdateForm";
 import { resources } from "./utils/translations";
 
 export default function App() {
+  console.log("[CatResumeMaker] App() render start", {
+    ts: Date.now(),
+    browserLang: navigator.language,
+    hasLocalStorageResume: !!localStorage.getItem("catresumaker_resume"),
+    hasLocalStorageLogs: !!localStorage.getItem("catresumaker_logs"),
+    hasVisitedBefore: localStorage.getItem("catresumaker_onboard_seen") !== null
+  });
+
   // Persistence with local storage
   const [resume, setResume] = useState<ResumeData>(() => {
     const saved = localStorage.getItem("catresumaker_resume");
@@ -68,8 +76,19 @@ export default function App() {
 
   const t = resources[lang];
 
+  console.log("[CatResumeMaker] App() derived state", {
+    lang,
+    templateId,
+    activeTab,
+    editSection,
+    resumeKeys: Object.keys(resume || {})
+  });
+
   // Sync states to local storage
   useEffect(() => {
+    console.log("[CatResumeMaker] persist resume to localStorage", {
+      bytes: JSON.stringify(resume).length
+    });
     localStorage.setItem("catresumaker_resume", JSON.stringify(resume));
   }, [resume]);
 
@@ -134,12 +153,16 @@ export default function App() {
     }, 2500);
 
     try {
+      console.log("[CatResumeMaker] calling /api/health");
       const res = await fetch("/api/health");
+      console.log("[CatResumeMaker] /api/health status", res.status);
       const data = await res.json();
+      console.log("[CatResumeMaker] /api/health payload", data);
       const endTime = performance.now();
       setConnectionLatency(Math.round(endTime - startTime));
       setApiConnected(data.hasApiKey);
     } catch {
+      console.warn("[CatResumeMaker] /api/health failed (fetch/JSON)");
       setApiConnected(false);
       setConnectionLatency(null);
     } finally {
@@ -150,6 +173,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    console.log("[CatResumeMaker] verifySystemConnectivity() effect firing");
     verifySystemConnectivity();
   }, []);
 
