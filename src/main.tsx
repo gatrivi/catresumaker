@@ -40,10 +40,16 @@ console.log("[CatResumeMaker] root element found", {
 const logStyleSheets = (label: string) => {
   try {
     const sheets = Array.from(document.styleSheets || []);
-    console.log(`[CatResumeMaker] ${label}: styleSheets`, {
-      count: sheets.length,
-      hrefs: sheets.map((s: any) => s.href).filter(Boolean)
-    });
+    const hrefs = sheets.map((s: any) => s.href).filter(Boolean);
+    console.log(`[CatResumeMaker] ${label}: styleSheets count=${sheets.length} hrefsCount=${hrefs.length}`);
+    console.log(`[CatResumeMaker] ${label}: styleSheets hrefs=`, hrefs);
+
+    const linkCount = document.querySelectorAll('link[rel="stylesheet"]').length;
+    const firstLink = document.querySelector('link[rel="stylesheet"]') as HTMLLinkElement | null;
+    console.log(`[CatResumeMaker] ${label}: link[rel=stylesheet] count=${linkCount} firstHref=${firstLink?.href || "none"}`);
+
+    const bodyStyle = window.getComputedStyle(document.body);
+    console.log(`[CatResumeMaker] ${label}: computed body background=${bodyStyle.backgroundColor} color=${bodyStyle.color}`);
   } catch (e: any) {
     console.warn(`[CatResumeMaker] ${label}: styleSheets read failed`, e?.message);
   }
