@@ -46,5 +46,33 @@
       page-break-inside: avoid !important;
     }
   }
+
+  /* Custom high-impact flashing for first-time visual guidance */
+  @keyframes custom-flash {
+    0%, 100% {
+      transform: scale(1);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+    }
+    50% {
+      transform: scale(1.03);
+      border-color: rgba(99, 102, 241, 0.9);
+      box-shadow: 0 0 12px 3px rgba(99, 102, 241, 0.6);
+    }
+  }
+
+  /* Custom spinning animation */
+  @keyframes spin-linear {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .animate-flash-attention {
+    animation: custom-flash 1.5s infinite ease-in-out;
+  }
+
+  .animator-spin {
+    animation: spin-linear 1s infinite linear;
+  }
 }
 

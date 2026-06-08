@@ -13,20 +13,24 @@ import {
   GitMerge, 
   ArrowLeftRight 
 } from "lucide-react";
+import { resources } from "../utils/translations";
 
 interface LogUpdateFormProps {
   currentResume: ResumeData;
   onUpdateResume: (updatedResume: ResumeData) => void;
   logs: WorkLogEntry[];
   onSetLogs: (logs: WorkLogEntry[]) => void;
+  lang?: 'es' | 'en';
 }
 
 export default function LogUpdateForm({ 
   currentResume, 
   onUpdateResume, 
   logs, 
-  onSetLogs 
+  onSetLogs,
+  lang = 'en'
 }: LogUpdateFormProps) {
+  const t = resources[lang];
   const [newLogText, setNewLogText] = useState("");
   const [loading, setLoading] = useState(false);
   const [explanation, setExplanation] = useState<string | null>(null);
@@ -68,7 +72,7 @@ export default function LogUpdateForm({
 
       const resData = await response.json();
       if (!response.ok || !resData.success) {
-        throw new Error(resData.error || "Failed to structure log update.");
+        throw new Error(resData.error || (lang === 'es' ? "Error al estructurar la sincronización." : "Failed to structure log update."));
       }
 
       setExplanation(resData.explanationOfChanges);
@@ -92,7 +96,7 @@ export default function LogUpdateForm({
 
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "An error occurred during Gemini sync.");
+      setError(err.message || (lang === 'es' ? "Ocurrió un error en la sincronización con Gemini." : "An error occurred during Gemini sync."));
     } finally {
       setLoading(false);
     }
@@ -155,20 +159,20 @@ export default function LogUpdateForm({
     <div className="flex flex-col gap-5">
       {/* Pending Suggestion Panel (Takes over if draft exists) */}
       {pendingDraft && (
-        <div className="bg-gradient-to-br from-indigo-50 to-sky-50 border border-indigo-100 rounded-xl p-5 shadow-sm transition-all animate-in fade-in zoom-in-95 duration-200">
-          <div className="flex items-center gap-2 text-indigo-900 font-bold text-base mb-3">
-            <GitMerge className="w-5 h-5 text-indigo-600 shrink-0" />
-            <span>AI Revision Completed</span>
+        <div className="bg-gradient-to-br from-indigo-900/50 to-slate-900 border border-indigo-500/20 rounded-xl p-5 shadow-lg transition-all animate-in fade-in zoom-in-95 duration-200">
+          <div className="flex items-center gap-2 text-indigo-200 font-bold text-base mb-3">
+            <GitMerge className="w-5 h-5 text-indigo-400 shrink-0" />
+            <span>{t.revisionCompleted}</span>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border border-indigo-100/50 text-xs text-neutral-700 leading-relaxed max-h-48 overflow-y-auto mb-4 font-sans shadow-inner">
-            <h5 className="font-bold text-neutral-800 text-xs uppercase tracking-wider mb-2 text-[10px]">Changes Logged:</h5>
+          <div className="bg-slate-950 rounded-lg p-4 border border-indigo-500/10 text-xs text-slate-300 leading-relaxed max-h-48 overflow-y-auto mb-4 font-mono shadow-inner">
+            <h5 className="font-bold text-slate-400 text-[10px] uppercase tracking-wider mb-2">{t.changesLogged}</h5>
             <p className="whitespace-pre-line">{explanation}</p>
           </div>
 
-          <p className="text-xs text-indigo-950/70 mb-4 font-semibold flex items-center gap-1.5 bg-indigo-500/10 px-2.5 py-1.5 rounded-md">
-            <ArrowLeftRight className="w-4 h-4 text-indigo-600 shrink-0" />
-            Review the updated document to verify content placement before committing.
+          <p className="text-xs text-indigo-200/80 mb-4 font-semibold flex items-center gap-1.5 bg-indigo-500/15 p-2.5 rounded-lg border border-indigo-500/10">
+            <ArrowLeftRight className="w-4 h-4 text-indigo-400 shrink-0" />
+            {t.reviewDraft}
           </p>
 
           <div className="grid grid-cols-2 gap-3 pb-1">
@@ -177,16 +181,16 @@ export default function LogUpdateForm({
                 setPendingDraft(null);
                 setExplanation(null);
               }}
-              className="px-4 py-2 bg-white border border-neutral-250 text-neutral-700 text-xs font-semibold rounded-lg hover:bg-neutral-50 cursor-pointer transition-all uppercase tracking-wider text-center"
+              className="px-4 py-2 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg cursor-pointer transition-all uppercase tracking-wider text-center"
             >
-              Discard Suggestions
+              {t.discardBtn}
             </button>
             <button
               onClick={handleAcceptChanges}
-              className="px-4 py-2 bg-slate-900 border border-slate-900 hover:bg-indigo-600 hover:border-indigo-600 text-white text-xs font-semibold rounded-lg cursor-pointer transition-all uppercase tracking-wider text-center flex items-center justify-center gap-1.5"
+              className="px-4 py-2 bg-indigo-600 border border-indigo-500 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg cursor-pointer transition-all uppercase tracking-wider text-center flex items-center justify-center gap-1.5 shadow-md shadow-indigo-600/10"
             >
               <CheckCircle2 className="w-4 h-4" />
-              Accept Changes
+              {t.acceptBtn}
             </button>
           </div>
         </div>
@@ -194,12 +198,12 @@ export default function LogUpdateForm({
 
       {/* Daily Progress Entry Card */}
       {!pendingDraft && (
-        <div className="bg-white rounded-xl border border-neutral-150 p-5 shadow-sm">
-          <h3 className="font-semibold text-neutral-900 text-base mb-1 inline-flex items-center gap-1.5">
-            <Calendar className="w-4 h-4 text-sky-500" />
-            Day-To-Day Career Logger
+        <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg">
+          <h3 className="font-semibold text-slate-100 text-base mb-1 inline-flex items-center gap-1.5">
+            <Calendar className="w-4 h-4 text-sky-400" />
+            {t.logTitle}
           </h3>
-          <p className="text-xs text-neutral-500 mb-4">Record your daily actions, accomplishments, or metrics. Gemini will integrate them cleanly into the PDF layout.</p>
+          <p className="text-xs text-slate-400 mb-4">{t.logSubtitle}</p>
 
           <form onSubmit={handleAddLocalLog} className="flex flex-col gap-3">
             <div className="relative">
@@ -207,14 +211,14 @@ export default function LogUpdateForm({
                 value={newLogText}
                 onChange={(e) => setNewLogText(e.target.value)}
                 disabled={loading}
-                placeholder="Today I wrote a new API route in Express checking parameter structures... OR I optimized our Kubernetes warmup times by 10% using pre-loaded images."
-                className="w-full h-24 p-3 pr-8 bg-neutral-50 border border-neutral-200 rounded-lg text-xs text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white resize-none transition-all font-sans"
+                placeholder={t.logPlaceholder}
+                className="w-full h-24 p-3 pr-8 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-slate-950 resize-none transition-all font-sans"
               />
             </div>
 
             {error && (
-              <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg flex items-start gap-2.5 text-xs text-rose-700">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="p-3 bg-rose-950/40 border border-rose-900/50 rounded-lg flex items-start gap-2.5 text-xs text-rose-300">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
                 <span>{error}</span>
               </div>
             )}
@@ -223,28 +227,28 @@ export default function LogUpdateForm({
               <button
                 type="submit"
                 disabled={loading || !newLogText.trim()}
-                className="flex-1 bg-white border border-neutral-250 text-neutral-700 text-xs font-medium py-2 rounded-lg hover:border-neutral-400 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed justify-center items-center inline-flex gap-1"
-                title="Save this log to timeline to apply later"
+                className="flex-1 bg-slate-800 border border-slate-700 text-slate-200 text-xs font-medium py-2 rounded-lg hover:bg-slate-750 hover:border-slate-600 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed justify-center items-center inline-flex gap-1"
+                title={t.saveLocalBtn}
               >
                 <Plus className="w-3.5 h-3.5" />
-                Store to Timeline
+                {t.saveLocalBtn}
               </button>
 
               <button
                 type="button"
                 onClick={() => handleAISync(newLogText)}
                 disabled={loading || !newLogText.trim()}
-                className="flex-1 bg-neutral-900 hover:bg-sky-600 text-white text-xs font-semibold py-2 rounded-lg cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed justify-center items-center inline-flex gap-1.5 transition-all shadow-sm"
+                className="flex-1 bg-indigo-650 hover:bg-indigo-600 text-white text-xs font-semibold py-2 rounded-lg cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed justify-center items-center inline-flex gap-1.5 transition-all shadow-md shadow-indigo-650/10"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>Syncing...</span>
+                    <Loader2 className="w-3.5 h-3.5 animator-spin animate-spin text-indigo-300" />
+                    <span>{t.syncingBtn}</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-3.5 h-3.5 text-sky-300" />
-                    Quick AI Sync
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-300" />
+                    {t.quickSyncBtn}
                   </>
                 )}
               </button>
@@ -255,18 +259,18 @@ export default function LogUpdateForm({
 
       {/* Log Feed History */}
       {!pendingDraft && (
-        <div className="bg-white rounded-xl border border-neutral-150 p-5 shadow-sm">
+        <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg">
           <div className="flex justify-between items-center mb-4">
-            <h4 className="font-semibold text-neutral-900 text-sm">
-              Work Logs Timeline ({logs.length})
+            <h4 className="font-semibold text-slate-100 text-sm">
+              {t.timelineTitle} ({logs.length})
             </h4>
             {logs.some(l => l.status === "pending") && (
               <button
                 onClick={handleBulkSyncAll}
                 disabled={loading}
-                className="text-[10px] uppercase font-bold text-indigo-600 hover:text-indigo-800 tracking-wider inline-flex items-center gap-1 cursor-pointer"
+                className="text-[10px] uppercase font-bold text-sky-450 hover:text-sky-300 tracking-wider inline-flex items-center gap-1 cursor-pointer"
               >
-                Sync Pending ({logs.filter(l => l.status === "pending").length})
+                {t.syncPendingBtn} ({logs.filter(l => l.status === "pending").length})
                 <ChevronRight className="w-3 h-3" />
               </button>
             )}
@@ -274,10 +278,10 @@ export default function LogUpdateForm({
 
           <div className="flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-1">
             {logs.length === 0 ? (
-              <div className="text-center py-6 border-2 border-dashed border-neutral-100 rounded-lg text-neutral-400 text-xs flex flex-col items-center gap-2">
-                <Clock className="w-5 h-5 text-neutral-300" />
-                <p>No activity logs captured.</p>
-                <p className="text-[10px] text-neutral-400 max-w-[200px]">Logs entered here track your daily tasks, ready to sync dynamically.</p>
+              <div className="text-center py-6 border-2 border-dashed border-slate-800 rounded-lg text-slate-500 text-xs flex flex-col items-center gap-2">
+                <Clock className="w-5 h-5 text-slate-600" />
+                <p>{t.noLogsCaptured}</p>
+                <p className="text-[10px] text-slate-600 max-w-[200px]">{t.noLogsDesc}</p>
               </div>
             ) : (
               logs.map((log) => (
@@ -285,31 +289,31 @@ export default function LogUpdateForm({
                   key={log.id} 
                   className={`p-3 rounded-lg border text-xs relative group transition-all ${
                     log.status === "integrated" 
-                      ? "bg-emerald-50/20 border-emerald-100" 
-                      : "bg-neutral-50/60 border-neutral-150 hover:bg-neutral-50 hover:border-neutral-250 cursor-pointer"
+                      ? "bg-emerald-950/20 border-emerald-900/50" 
+                      : "bg-slate-950 border-slate-800 hover:bg-slate-850 hover:border-slate-700 cursor-pointer"
                   }`}
                   onClick={() => log.status === 'pending' && handleAISync(log.content, log.id)}
                 >
                   <div className="flex justify-between items-center mb-1.5 flex-wrap gap-2 pr-6">
-                    <span className="font-mono text-[10px] text-neutral-400 font-medium flex items-center gap-1.5 flex-row">
+                    <span className="font-mono text-[10px] text-slate-500 font-medium flex items-center gap-1.5 flex-row">
                       <Clock className="w-3 h-3" />
                       {log.date}
                     </span>
                     <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${
                       log.status === 'integrated' 
-                        ? 'bg-emerald-100/60 text-emerald-700' 
-                        : 'bg-indigo-100/60 text-indigo-700 font-medium'
+                        ? 'bg-emerald-950 text-emerald-400 border border-emerald-900/40' 
+                        : 'bg-indigo-950 text-indigo-400 border border-indigo-900/40 font-medium'
                     }`}>
-                      {log.status === 'integrated' ? 'Synced' : 'Ready to Sync'}
+                      {log.status === 'integrated' ? t.synced : t.readyToSync}
                     </span>
                   </div>
 
-                  <p className="text-neutral-700 font-sans leading-relaxed break-words">{log.content}</p>
+                  <p className="text-slate-300 font-sans leading-relaxed break-words">{log.content}</p>
 
                   <button
                     onClick={(e) => handleDeleteLog(log.id, e)}
-                    className="absolute right-2.5 top-2.5 text-neutral-400 hover:text-rose-600 transition-opacity p-1 rounded hover:bg-neutral-100 opacity-60 group-hover:opacity-100 cursor-pointer"
-                    title="Delete entry"
+                    className="absolute right-2.5 top-2.5 text-slate-500 hover:text-rose-400 transition-opacity p-1 rounded hover:bg-slate-800 opacity-60 group-hover:opacity-100 cursor-pointer"
+                    title={t.deleteEntry}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
