@@ -1,0 +1,6 @@
+{
+  "name": "CatResumeMaker",
+  "description": "Continuous professional ATS-optimized resume builder that incremental merges daily activity logs into formatted designs via Gemini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
