@@ -1,4 +1,5 @@
 import express from "express";
+import fs from "fs";
 import path from "path";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
@@ -267,7 +268,13 @@ Instructions:
 
 // Configure Vite or Static Asset Serving
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  const distPath = path.join(process.cwd(), "dist");
+  const distIndexHtmlPath = path.join(distPath, "index.html");
+  const hasDistBuild = fs.existsSync(distIndexHtmlPath);
+
+  // Prefer serving the built SPA assets when present (Render builds `dist/`).
+  // Fall back to Vite dev middleware only when dist is missing.
+  if (!hasDistBuild) {
     console.log("Loading Vite Dev Mode...");
     const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
@@ -277,7 +284,6 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     console.log("Loading Production assets form 'dist'...");
-    const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
