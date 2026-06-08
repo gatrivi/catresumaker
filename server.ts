@@ -11,6 +11,21 @@ const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json({ limit: "50mb" }));
 
+let __reqLogCount = 0;
+app.use((req, res, next) => {
+  // Keep logs bounded to avoid spamming Render.
+  if (__reqLogCount < 25) {
+    console.log("[CatResumeMaker][server] req", {
+      method: req.method,
+      path: req.path,
+      originalUrl: (req as any).originalUrl,
+      host: req.headers.host
+    });
+    __reqLogCount++;
+  }
+  next();
+});
+
 // Lazy initializer for Gemini client
 let aiClient: GoogleGenAI | null = null;
 function getGeminiClient(): GoogleGenAI {
@@ -286,6 +301,10 @@ async function startServer() {
     console.log("Loading Production assets form 'dist'...");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
+      console.log("[CatResumeMaker][server] SPA fallback to index.html", {
+        path: req.path,
+        distPath,
+      });
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
