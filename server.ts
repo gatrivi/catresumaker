@@ -15,13 +15,74 @@ const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json({ limit: "50mb" }));
 
+const hasGeminiKey = !!process.env.GEMINI_API_KEY;
+const hasFreeLLMApiKey = !!process.env.FREELLMAPI_API_KEY;
+
+const FREE_LLM_BASE_URL = process.env.FREELLMAPI_BASE_URL || "http://localhost:3001/v1";
+const FREE_LLM_MODEL = process.env.FREELLMAPI_MODEL || "auto";
+
+function safeParseJson(text: string): any {
+  const trimmed = text.trim();
+
+  // Common LLM habit: wrap JSON in markdown fences.
+  const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  const candidate = fenceMatch ? fenceMatch[1].trim() : trimmed;
+
+  // If the model returns extra text, grab the first/last JSON braces range.
+  try {
+    return JSON.parse(candidate);
+  } catch {
+    const start = candidate.indexOf("{");
+    const end = candidate.lastIndexOf("}");
+    if (start !== -1 && end !== -1 && end > start) {
+      return JSON.parse(candidate.slice(start, end + 1));
+    }
+    throw new Error("Failed to parse JSON output from the AI model.");
+  }
+}
+
+async function callFreeLLMChat(systemPrompt: string, userPrompt: string): Promise<string> {
+  const base = FREE_LLM_BASE_URL.replace(/\/$/, "");
+  const url = `${base}/chat/completions`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.FREELLMAPI_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: FREE_LLM_MODEL,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      temperature: 0.2,
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(`FreeLLMAPI request failed (${response.status}). ${text}`);
+  }
+
+  const data = await response.json();
+  const content = data?.choices?.[0]?.message?.content;
+  if (!content || typeof content !== "string") {
+    throw new Error("FreeLLMAPI returned an empty or invalid response.");
+  }
+  return content;
+}
+
 // Lazy initializer for Gemini client
 let aiClient: GoogleGenAI | null = null;
 function getGeminiClient(): GoogleGenAI {
   if (!aiClient) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      throw new Error("GEMINI_API_KEY environment variable is missing. Please add it in Settings > Secrets.");
+      throw new Error(
+        "GEMINI_API_KEY is missing. Set it in your local `.env` file (or environment variables) before using the AI endpoints."
+      );
     }
     aiClient = new GoogleGenAI({
       apiKey,
@@ -39,7 +100,9 @@ function getGeminiClient(): GoogleGenAI {
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
-    hasApiKey: !!process.env.GEMINI_API_KEY,
+    hasApiKey: hasGeminiKey || hasFreeLLMApiKey,
+    hasGeminiKey,
+    hasFreeLLMApiKey,
   });
 });
 
@@ -131,6 +194,35 @@ const RESUME_SCHEMA = {
   required: ["personalInfo", "education", "experience", "projects", "skills", "languages", "certifications"]
 };
 
+// Plain-text JSON structure guidance for FreeLLMAPI.
+// Gemini enforces the schema via `responseSchema`, but FreeLLMAPI is prompt-based.
+const RESUME_JSON_STRUCTURE = `
+Return ONLY valid JSON (no markdown/code fences, no extra commentary) with this exact top-level shape:
+{
+  "personalInfo": { "name": string, "title": string, "email": string, "phone": string, "website": string, "location": string, "summary": string },
+  "education": [{ "institution": string, "degree": string, "location": string, "dates": string, "description": string }],
+  "experience": [{ "company": string, "title": string, "location": string, "dates": string, "bullets": [string], "current": boolean }],
+  "projects": [{ "name": string, "description": string, "technologies": [string], "bullets": [string], "url": string }],
+  "skills": [{ "category": string, "items": [string] }],
+  "languages": [string],
+  "certifications": [string]
+}
+
+Required rules:
+- personalInfo.summary must be a polished 2-3 sentence professional summary.
+- experience[].bullets must be 3-5 STAR-method bullets (action verbs, preferably quantified).
+- projects[].bullets must be 1-3 accomplishment bullets.
+`;
+
+const UPDATE_RESPONSE_JSON_STRUCTURE = `
+Return ONLY valid JSON with this exact top-level shape:
+{
+  "explanationOfChanges": string,
+  "updatedResume": (same structure as the resume JSON described below)
+}
+
+` + RESUME_JSON_STRUCTURE;
+
 // --- ENDPOINTS ---
 
 // 1. Parse initial resume block text
@@ -142,7 +234,6 @@ app.post("/api/resume/parse-init", async (req, res) => {
        return;
     }
 
-    const ai = getGeminiClient();
     const prompt = `
 You are a top-tier Professional Resume Consultant and an expert at parsing raw, messy career bio information into perfect, polished, ATS (Applicant Tracking System)-optimized resumes.
 
@@ -161,15 +252,31 @@ ${rawText}
 """
     `;
 
+    if (!hasFreeLLMApiKey && !hasGeminiKey) {
+      throw new Error(
+        "AI offline. Set FREELLMAPI_API_KEY (FreeLLMAPI) or GEMINI_API_KEY in your local `.env` before using the AI endpoints."
+      );
+    }
+
+    if (hasFreeLLMApiKey) {
+      const systemInstruction = "You output ONLY valid JSON. " + RESUME_JSON_STRUCTURE;
+      const content = await callFreeLLMChat(systemInstruction, prompt);
+      const parsedData = safeParseJson(content);
+      res.json({ success: true, resume: parsedData });
+      return;
+    }
+
+    const ai = getGeminiClient();
     const response = await ai.models.generateContent({
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are an ATS resume parsing engine. You output structured JSON strictly matching the defined schema layout. Ensure you generate 3-5 polished, metric-driven action bullets per job experience.",
+        systemInstruction:
+          "You are an ATS resume parsing engine. You output structured JSON strictly matching the defined schema layout. Ensure you generate 3-5 polished, metric-driven action bullets per job experience.",
         responseMimeType: "application/json",
         responseSchema: RESUME_SCHEMA,
-        temperature: 0.2
-      }
+        temperature: 0.2,
+      },
     });
 
     const parsedJsonText = response.text;
@@ -201,8 +308,6 @@ app.post("/api/resume/apply-update", async (req, res) => {
        return;
     }
 
-    const ai = getGeminiClient();
-    
     // Schema representing the updated resume and a change report
     const UPDATE_RESPONSE_SCHEMA = {
       type: Type.OBJECT,
@@ -239,15 +344,35 @@ Instructions:
 4. Output the strict updated resume along with this change history.
 `;
 
+    if (!hasFreeLLMApiKey && !hasGeminiKey) {
+      throw new Error(
+        "AI offline. Set FREELLMAPI_API_KEY (FreeLLMAPI) or GEMINI_API_KEY in your local `.env` before using the AI endpoints."
+      );
+    }
+
+    if (hasFreeLLMApiKey) {
+      const systemInstruction = "You output ONLY valid JSON. " + UPDATE_RESPONSE_JSON_STRUCTURE;
+      const content = await callFreeLLMChat(systemInstruction, prompt);
+      const updateResponse = safeParseJson(content);
+      res.json({
+        success: true,
+        explanationOfChanges: updateResponse.explanationOfChanges,
+        updatedResume: updateResponse.updatedResume,
+      });
+      return;
+    }
+
+    const ai = getGeminiClient();
     const response = await ai.models.generateContent({
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are an incremental update resolver for structured resumes. You return a JSON object with 'explanationOfChanges' and 'updatedResume' based on the requested log update.",
+        systemInstruction:
+          "You are an incremental update resolver for structured resumes. You return a JSON object with 'explanationOfChanges' and 'updatedResume' based on the requested log update.",
         responseMimeType: "application/json",
         responseSchema: UPDATE_RESPONSE_SCHEMA,
-        temperature: 0.3
-      }
+        temperature: 0.3,
+      },
     });
 
     const parsedJsonText = response.text;
@@ -259,7 +384,7 @@ Instructions:
     res.json({
       success: true,
       explanationOfChanges: updateResponse.explanationOfChanges,
-      updatedResume: updateResponse.updatedResume
+      updatedResume: updateResponse.updatedResume,
     });
   } catch (error: any) {
     console.error("Apply Update Error:", error);

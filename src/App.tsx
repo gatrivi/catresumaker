@@ -369,11 +369,28 @@ export default function App() {
           <div className="flex items-center gap-3">
             {/* The adorable custom dog app icon requested! */}
             <div className="relative group shrink-0">
-              <img 
-                src="/src/assets/app_icon.png" 
-                className="w-10 h-10 rounded-xl object-cover border border-slate-700 shadow-md transform group-hover:scale-105 transition-all outline-none"
-                alt="Dog Icon Logo" 
-              />
+              <svg
+                viewBox="0 0 64 64"
+                role="img"
+                aria-label="Dog Icon Logo"
+                className="w-10 h-10 rounded-xl border border-slate-700 shadow-md transform group-hover:scale-105 transition-all outline-none bg-slate-950"
+              >
+                <defs>
+                  <linearGradient id="dogGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#38bdf8" />
+                    <stop offset="100%" stopColor="#818cf8" />
+                  </linearGradient>
+                </defs>
+                <rect x="4" y="4" width="56" height="56" rx="14" fill="#0f172a" stroke="#334155" strokeWidth="2" />
+                <path d="M24 22 L18 10 L30 16 Z" fill="url(#dogGrad)" opacity="0.95" />
+                <path d="M40 22 L46 10 L34 16 Z" fill="url(#dogGrad)" opacity="0.95" />
+                <circle cx="32" cy="34" r="16" fill="url(#dogGrad)" opacity="0.95" />
+                <circle cx="25" cy="34" r="2.6" fill="#0b1220" />
+                <circle cx="39" cy="34" r="2.6" fill="#0b1220" />
+                <path d="M28 40 C30 42.5,34 42.5,36 40" stroke="#0b1220" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+                <path d="M30 37 L32.2 39.2 L30 41.4 Z" fill="#0b1220" opacity="0.9" />
+                <rect x="22" y="44" width="20" height="8" rx="4" fill="#38bdf8" opacity="0.35" />
+              </svg>
               <span className="absolute -bottom-1 -right-1 bg-sky-500 w-3 h-3 rounded-full border-2 border-slate-900 animate-pulse" />
             </div>
             <div>
@@ -412,7 +429,7 @@ export default function App() {
                   ? t.connectionTesting 
                   : apiConnected === true 
                     ? `${t.connectionHealthy} (${connectionLatency || 0}ms)` 
-                    : "Gemini Key Offline"}
+                    : t.apiMissing}
               </span>
             </div>
 

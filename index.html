@@ -9,19 +9,29 @@
     <meta name="description" content="Continuous professional ATS-optimized resume builder that incremental merges daily activity logs into formatted designs via Gemini." />
     
     <!-- Favicon referencing the adorable puppy dog icon -->
-    <link rel="icon" type="image/png" href="/src/assets/app_icon.png" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20x='4'%20y='4'%20width='56'%20height='56'%20rx='14'%20fill='rgb(15,23,42)'%20stroke='rgb(51,65,85)'%20stroke-width='2'/%3E%3Cpath%20d='M24%2022%20L18%2010%20L30%2016%20Z'%20fill='rgb(56,189,248)'%20opacity='0.95'/%3E%3Cpath%20d='M40%2022%20L46%2010%20L34%2016%20Z'%20fill='rgb(129,140,248)'%20opacity='0.95'/%3E%3Ccircle%20cx='32'%20cy='34'%20r='16'%20fill='rgb(56,189,248)'%20opacity='0.95'/%3E%3Ccircle%20cx='25'%20cy='34'%20r='2.6'%20fill='rgb(11,18,32)'/%3E%3Ccircle%20cx='39'%20cy='34'%20r='2.6'%20fill='rgb(11,18,32)'/%3E%3Cpath%20d='M28%2040%20C30%2042.5,34%2042.5,36%2040'%20stroke='rgb(11,18,32)'%20stroke-width='2.2'%20fill='none'%20stroke-linecap='round'/%3E%3Cpath%20d='M30%2037%20L32.2%2039.2%20L30%2041.4%20Z'%20fill='rgb(11,18,32)'%20opacity='0.9'/%3E%3Crect%20x='22'%20y='44'%20width='20'%20height='8'%20rx='4'%20fill='rgb(56,189,248)'%20opacity='0.35'/%3E%3C/svg%3E"
+    />
 
     <!-- OpenGraph/Facebook social sharing preview tags -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="CatResumeMaker — Incremental ATS Resume Optimizer" />
     <meta property="og:description" content="Keep your resume perpetually active. Seamlessly merge daily logs and accomplishments into an ATS-readied document layout with Gemini." />
-    <meta property="og:image" content="/src/assets/app_icon.png" />
+    <meta
+      property="og:image"
+      content="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20x='4'%20y='4'%20width='56'%20height='56'%20rx='14'%20fill='rgb(15,23,42)'%20stroke='rgb(51,65,85)'%20stroke-width='2'/%3E%3Cpath%20d='M24%2022%20L18%2010%20L30%2016%20Z'%20fill='rgb(56,189,248)'%20opacity='0.95'/%3E%3Cpath%20d='M40%2022%20L46%2010%20L34%2016%20Z'%20fill='rgb(129,140,248)'%20opacity='0.95'/%3E%3Ccircle%20cx='32'%20cy='34'%20r='16'%20fill='rgb(56,189,248)'%20opacity='0.95'/%3E%3Ccircle%20cx='25'%20cy='34'%20r='2.6'%20fill='rgb(11,18,32)'/%3E%3Ccircle%20cx='39'%20cy='34'%20r='2.6'%20fill='rgb(11,18,32)'/%3E%3Cpath%20d='M28%2040%20C30%2042.5,34%2042.5,36%2040'%20stroke='rgb(11,18,32)'%20stroke-width='2.2'%20fill='none'%20stroke-linecap='round'/%3E%3Cpath%20d='M30%2037%20L32.2%2039.2%20L30%2041.4%20Z'%20fill='rgb(11,18,32)'%20opacity='0.9'/%3E%3Crect%20x='22'%20y='44'%20width='20'%20height='8'%20rx='4'%20fill='rgb(56,189,248)'%20opacity='0.35'/%3E%3C/svg%3E"
+    />
 
     <!-- Twitter card preview branding tags -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="CatResumeMaker — Continuous ATS Resume Optimizer" />
     <meta name="twitter:description" content="Scribble daily work notes and see them instantly synthesised into elegant, bot-readable accomplishments. Built for elite software engineers." />
-    <meta name="twitter:image" content="/src/assets/app_icon.png" />
+    <meta
+      name="twitter:image"
+      content="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20x='4'%20y='4'%20width='56'%20height='56'%20rx='14'%20fill='rgb(15,23,42)'%20stroke='rgb(51,65,85)'%20stroke-width='2'/%3E%3Cpath%20d='M24%2022%20L18%2010%20L30%2016%20Z'%20fill='rgb(56,189,248)'%20opacity='0.95'/%3E%3Cpath%20d='M40%2022%20L46%2010%20L34%2016%20Z'%20fill='rgb(129,140,248)'%20opacity='0.95'/%3E%3Ccircle%20cx='32'%20cy='34'%20r='16'%20fill='rgb(56,189,248)'%20opacity='0.95'/%3E%3Ccircle%20cx='25'%20cy='34'%20r='2.6'%20fill='rgb(11,18,32)'/%3E%3Ccircle%20cx='39'%20cy='34'%20r='2.6'%20fill='rgb(11,18,32)'/%3E%3Cpath%20d='M28%2040%20C30%2042.5,34%2042.5,36%2040'%20stroke='rgb(11,18,32)'%20stroke-width='2.2'%20fill='none'%20stroke-linecap='round'/%3E%3Cpath%20d='M30%2037%20L32.2%2039.2%20L30%2041.4%20Z'%20fill='rgb(11,18,32)'%20opacity='0.9'/%3E%3Crect%20x='22'%20y='44'%20width='20'%20height='8'%20rx='4'%20fill='rgb(56,189,248)'%20opacity='0.35'/%3E%3C/svg%3E"
+    />
   </head>
   <body>
     <div id="root"></div>

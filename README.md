@@ -17,11 +17,25 @@ Traditional resumes are static, lagging documents. Software developers build inc
 
 ---
 
+## 🧪 Local Dev (run on your machine)
+
+1. Install dependencies:
+   `npm install`
+2. Create a local env file:
+   - Copy `.env.example` to `.env`
+   - Set `FREELLMAPI_API_KEY=...` (preferred)
+3. Start the app:
+   `npm run dev`
+4. Open in your browser:
+   `http://localhost:3000`
+
+Note: if both `FREELLMAPI_API_KEY` and `GEMINI_API_KEY` are missing, the UI still loads, but the AI endpoints will be unavailable (you'll see an “AI offline” status).
+
 ## 🛠️ Step-by-Step Interactive Demo Walkthrough
 
 Try the following steps to see CatResumeMaker's live pipeline in action:
 
-1. **System Health Check**: Verify the status badge in the navbar matches **"Gemini Engine Ready"** with live ping speeds.
+1. **System Health Check**: Verify the status badge in the navbar matches **"AI Engine Ready"** with live ping speeds.
 2. **Matrix Construction**: Go to the **"Re-Build Base"** (Reconstruir Base) tab, click **"Load Sample Profile Ingestion"**, and hit **"Build My Resume"**. Watch Gemini's structured pipeline pass through several phases to reconstruct bullet achievements in STAR formats.
 3. **Continuous Updating**: Under the **"Day-To-Day Sync"** (Sincronización Diaria) tab, type a natural update like: *"Today I integrated Stripe's customer webhook, resolving a double-charge race condition that affected 4% of checkouts."*
 4. **AI Merging**: Click **"Quick AI Sync"** to let Gemini analyze your update, figure out *which* role it belongs to, draft the STAR metrics, and offer an interactive side-by-side accept panel.
