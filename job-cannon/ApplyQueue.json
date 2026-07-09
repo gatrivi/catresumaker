@@ -1,0 +1,165 @@
+[
+  {
+    "id": "6afc91c6548ee2b4489a",
+    "slug": "blackbirdlab-junior-frontend-engineer",
+    "company": "Blackbird Lab",
+    "title": "Junior Frontend Engineer",
+    "url": "https://viumavaga.com.br/conecta/oportunidade/junior-frontend-engineer-remote-latam-0f2a40c7f6256f7b9d9345d08cd990a4/",
+    "source": "seed",
+    "rawTextHash": "a809a0eb87c17d36e072e7a3749eea846e0cc24f35c44e260a2a330e1363fc29",
+    "status": "apply_today",
+    "decision": "APPLY",
+    "dates": {
+      "sourcedAt": "2026-06-25T17:36:54.337Z",
+      "updatedAt": "2026-07-03T04:16:25.753Z",
+      "rankedAt": "2026-07-03T04:16:25.753Z"
+    },
+    "fitScore": 10,
+    "riskFlags": [],
+    "priority": 10,
+    "nextAction": "Manually submit application (copy/paste pack)",
+    "nextActionAt": "2026-07-03T04:16:25.753Z"
+  },
+  {
+    "id": "87f3a0006faa5fc99102",
+    "slug": "zensors-inc-careers-zensors-inc-careers-engineering-frontend-https-careers-zenso",
+    "company": "Zensors Inc",
+    "title": "Careers Zensors Inc Careers Engineering Frontend Web Developer React/Typescript ",
+    "source": "https://careers.zensors.com/jobs/Qc_VY1AEfbC5/frontend-web-developer-react-typescript-remote",
+    "rawTextHash": "a12763434f996a8cc4035847d3db4b5de9fa25c5c98ea78739a401111fc429d6",
+    "status": "apply_today",
+    "decision": "APPLY",
+    "dates": {
+      "sourcedAt": "2026-06-25T05:26:33.509Z",
+      "updatedAt": "2026-07-03T04:16:25.753Z",
+      "rankedAt": "2026-07-03T04:16:25.753Z"
+    },
+    "url": "https://careers.zensors.com/jobs/Qc_VY1AEfbC5/frontend-web-developer-react-typescript-remote",
+    "fitScore": 9,
+    "riskFlags": [
+      "senior-only phrasing"
+    ],
+    "priority": 9,
+    "nextAction": "Manually submit application (copy/paste pack)",
+    "nextActionAt": "2026-07-03T04:16:25.753Z"
+  },
+  {
+    "id": "e2bea84565ec9ec6fa42",
+    "slug": "doctype-html-html-head-prefix-og-http-ogp-me-ns-m-react-https-jobs-lever-co-blue",
+    "company": "<!DOCTYPE html><html><head prefix=\"og: http://ogp.me/ns#\"><m",
+    "title": "React",
+    "source": "https://jobs.lever.co/bluelightconsulting/8a814b05-5ef0-428f-8022-037205ae9014",
+    "rawTextHash": "8300feaf54a7011443dc9eac2cb047d9eb1cd5e8f883dd4c9c26de62b5287104",
+    "status": "ranked",
+    "decision": "MAYBE",
+    "dates": {
+      "sourcedAt": "2026-06-25T05:24:59.110Z",
+      "updatedAt": "2026-07-03T04:16:25.753Z",
+      "rankedAt": "2026-07-03T04:16:25.753Z"
+    },
+    "fitScore": 8,
+    "riskFlags": [
+      "senior-only phrasing",
+      "degree hard requirement"
+    ],
+    "priority": 8,
+    "nextAction": "Review and shortlist",
+    "nextActionAt": "2026-07-03T04:16:25.753Z"
+  },
+  {
+    "id": "d286e41f2f3c515a4cc9",
+    "slug": "zensors-frontend-web-developer",
+    "company": "Zensors",
+    "title": "Frontend Web Developer (React/Typescript)",
+    "url": "https://careers.zensors.com/jobs/Qc_VY1AEfbC5/frontend-web-developer-react-typescript-remote",
+    "source": "seed",
+    "rawTextHash": "e126e57abccc5b39b6b7a1d1917fa0251aa9f2ed16ecb741a152fe78c5e58032",
+    "status": "apply_today",
+    "decision": "APPLY",
+    "dates": {
+      "sourcedAt": "2026-06-25T17:36:54.342Z",
+      "updatedAt": "2026-07-03T04:16:25.753Z",
+      "rankedAt": "2026-07-03T04:16:25.753Z",
+      "packedAt": "2026-07-03T04:16:25.753Z"
+    },
+    "fitScore": 7,
+    "riskFlags": [],
+    "priority": 7,
+    "generatedPaths": {
+      "dir": "C:\\zengatrivi\\REACTJS\\catresumaker\\job-cannon\\jobs\\zensors-frontend-web-developer\\generated",
+      "applicationPackMd": "ApplicationPack.md",
+      "pasteBankTxt": "PasteBank.txt",
+      "followUpsMd": "FollowUps.md",
+      "interviewPrepMd": "InterviewPrep.md"
+    },
+    "nextAction": "Manually submit application (copy/paste pack)",
+    "nextActionAt": "2026-07-03T04:16:25.753Z"
+  },
+  {
+    "id": "b022ac92c6f5e18088c8",
+    "slug": "bluelight-consulting-react-https-jobs-lever-co-bluelightconsulting-8a814b05-5ef0",
+    "company": "Bluelight Consulting -",
+    "title": "React",
+    "source": "https://jobs.lever.co/bluelightconsulting/8a814b05-5ef0-428f-8022-037205ae9014",
+    "rawTextHash": "86d7273af507da5f5eb543d934318a1bc46e750ea16ae5087de20078e78f4507",
+    "status": "ranked",
+    "decision": "MAYBE",
+    "dates": {
+      "sourcedAt": "2026-06-25T05:25:30.830Z",
+      "updatedAt": "2026-07-03T04:16:25.753Z",
+      "rankedAt": "2026-07-03T04:16:25.753Z"
+    },
+    "fitScore": 7,
+    "riskFlags": [
+      "senior-only phrasing",
+      "degree hard requirement"
+    ],
+    "priority": 7,
+    "nextAction": "Review and shortlist",
+    "nextActionAt": "2026-07-03T04:16:25.753Z"
+  },
+  {
+    "id": "6292bab5d672b2c3d903",
+    "slug": "bluelight-react-engineer",
+    "company": "Unknown company",
+    "title": "Bluelight Consulting - React Engineer - Remote",
+    "url": "https://jobs.lever.co/bluelightconsulting/8a814b05-5ef0-428f-8022-037205ae9014",
+    "source": "https://jobs.lever.co/bluelightconsulting/8a814b05-5ef0-428f-8022-037205ae9014",
+    "rawTextHash": "86d7273af507da5f5eb543d934318a1bc46e750ea16ae5087de20078e78f4507",
+    "status": "ranked",
+    "decision": "MAYBE",
+    "dates": {
+      "sourcedAt": "2026-06-25T05:26:25.263Z",
+      "updatedAt": "2026-07-03T04:16:25.753Z",
+      "rankedAt": "2026-07-03T04:16:25.753Z"
+    },
+    "fitScore": 5,
+    "riskFlags": [
+      "degree hard requirement"
+    ],
+    "priority": 5,
+    "nextAction": "Review and shortlist",
+    "nextActionAt": "2026-07-03T04:16:25.753Z"
+  },
+  {
+    "id": "5fc1d48b62b341cdbdf1",
+    "slug": "acme-frontend-developer-https-example-com-job",
+    "company": "Acme",
+    "title": "Frontend Developer",
+    "url": "https://example.com/job",
+    "source": "Pasted",
+    "rawTextHash": "1f1d089a566495328894bfa382f63274cd3674555f543f5db522244ab234c34a",
+    "status": "ranked",
+    "decision": "SKIP",
+    "dates": {
+      "updatedAt": "2026-07-03T04:16:25.753Z",
+      "sourcedAt": "2026-06-25T17:33:22.467Z",
+      "rankedAt": "2026-06-25T17:33:29.451Z"
+    },
+    "fitScore": 1,
+    "riskFlags": [],
+    "priority": 1,
+    "nextAction": "Review and shortlist",
+    "nextActionAt": "2026-07-03T04:16:25.753Z"
+  }
+]

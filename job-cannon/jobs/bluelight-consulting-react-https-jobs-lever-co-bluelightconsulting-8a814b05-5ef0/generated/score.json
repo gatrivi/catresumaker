@@ -1,0 +1,24 @@
+{
+  "fit": {
+    "score0to10": 7,
+    "applyDecision": "APPLY",
+    "reasons": [
+      "React mentioned",
+      "TypeScript mentioned",
+      "Vite mentioned",
+      "senior/lead language present (risk)",
+      "Remote mentioned",
+      "LATAM/Argentina language present",
+      "API/integration mentioned",
+      "frontend/product language present"
+    ],
+    "riskFlags": [
+      "senior-only phrasing",
+      "degree hard requirement"
+    ]
+  },
+  "proofProjectId": "catintassist",
+  "proofProjectName": "CatIntAssist",
+  "proofProjectLink": "https://github.com/gatrivi/catintassist",
+  "updatedAtISO": "2026-06-25T05:26:39.635Z"
+}

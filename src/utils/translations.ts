@@ -71,6 +71,83 @@ export interface Translations {
   tip3: string;
   warningOverwritingTitle: string;
   warningOverwritingDesc: string;
+
+  signIn: string;
+  signOut: string;
+  jobOsNav: string;
+
+  auth: {
+    signInTitle: string;
+    registerTitle: string;
+    privacyNote: string;
+    fullName: string;
+    email: string;
+    password: string;
+    submitSignIn: string;
+    submitRegister: string;
+    switchToRegister: string;
+    switchToSignIn: string;
+    failed: string;
+  };
+
+  jobOs: {
+    title: string;
+    subtitle: string;
+    aiOffline: string;
+    backResume: string;
+    loginRequiredTitle: string;
+    loginRequiredDesc: string;
+    loginCta: string;
+    applyToday: string;
+    ranked: string;
+    applied: string;
+    total: string;
+    syncFolder: string;
+    sourceInbox: string;
+    scorePack: string;
+    forceRepack: string;
+    aiTailor: string;
+    importLegacy: string;
+    addJob: string;
+    pasteJobTitle: string;
+    companyPh: string;
+    rolePh: string;
+    urlPh: string;
+    descPh: string;
+    saveJob: string;
+    saving: string;
+    emptyQueue: string;
+    selectJob: string;
+    noPack: string;
+    copyPaste: string;
+    exportPdf: string;
+    open: string;
+    copy: string;
+    markApplied: string;
+    skip: string;
+    sessionExpired: string;
+    footer: string;
+    finderTitle: string;
+    finderSubtitle: string;
+    finderSearch: string;
+    finderSearching: string;
+    finderImport: string;
+    finderFetchUrl: string;
+    finderFetchUrlPh: string;
+    finderBookmarklet: string;
+    finderFit: string;
+    finderQueued: string;
+    finderNoResults: string;
+    finderKeywordsPh: string;
+    finderImportPack: string;
+    finderObscuraOn: string;
+    finderObscuraOff: string;
+    finderPasteBookmarklet: string;
+    quickApplyTitle: string;
+    quickApplyOpen: string;
+    quickApplyCopy: string;
+    quickApplyDone: string;
+  };
 }
 
 export const resources: Record<'en' | 'es', Translations> = {
@@ -81,7 +158,7 @@ export const resources: Record<'en' | 'es', Translations> = {
     continuousPipeline: "Continuous day-to-day resume pipeline",
     resetDemo: "Reset Demo",
     printExport: "Print / Export PDF",
-    apiMissing: "AI offline. Set FREELLMAPI_API_KEY (FreeLLMAPI) or GEMINI_API_KEY in your `.env` to sync.",
+    apiMissing: "AI offline. Set NVIDIA_API_KEY, FREELLMAPI_API_KEY, or GEMINI_API_KEY in `.env`.",
     apiConnected: "System Connected & Ready",
     apiChecking: "Checking pipeline connection...",
     apiError: "Pipeline unreachable. Check server connection.",
@@ -138,7 +215,7 @@ export const resources: Record<'en' | 'es', Translations> = {
     rawTextLabel: "Raw Career Text, Messy Bio or Pasted Profile",
     rawTextPlaceholder: "Example: I worked at Acme Inc as Tech Lead between 2021-2024. I managed a team of 4 engineers and we rebuilt the checkout page using React and Tailwind CSS...",
     parseFailed: "Parsing failed:",
-    addApiKeyTip: "Please make sure the development server has an AI API key configured (FREELLMAPI_API_KEY and/or GEMINI_API_KEY) in Environment Variables.",
+    addApiKeyTip: "Configure NVIDIA_API_KEY, FREELLMAPI_API_KEY, and/or GEMINI_API_KEY in your `.env` file.",
     loadSampleBtn: "Load Sample Profile Ingestion",
     buildResumeBtn: "Build My Resume",
     tipsTitle: "Tips for Elite ATS Construction",
@@ -146,7 +223,84 @@ export const resources: Record<'en' | 'es', Translations> = {
     tip2: "Type standard paragraphs describing your past credentials, projects, and educational milestones.",
     tip3: "Paste old PDF resume text blocks that lost formatting during scanners.",
     warningOverwritingTitle: "⚠️ Resynthesizing your file:",
-    warningOverwritingDesc: "Providing raw text will parse and manufacture a completely new core profile, overwriting current fields. Ensure you save or export your historical inputs first."
+    warningOverwritingDesc: "Providing raw text will parse and manufacture a completely new core profile, overwriting current fields. Ensure you save or export your historical inputs first.",
+
+    signIn: "Sign in",
+    signOut: "Sign out",
+    jobOsNav: "Job OS",
+
+    auth: {
+      signInTitle: "Sign in",
+      registerTitle: "Create account",
+      privacyNote: "Your resume and Job OS data stay in your private workspace — nothing shared with other users.",
+      fullName: "Full name",
+      email: "Email",
+      password: "Password (min 8 chars)",
+      submitSignIn: "Sign in",
+      submitRegister: "Create account",
+      switchToRegister: "Need an account? Register",
+      switchToSignIn: "Already have an account? Sign in",
+      failed: "Failed",
+    },
+
+    jobOs: {
+      title: "Job OS",
+      subtitle: "Source → score → AI pack → apply",
+      aiOffline: "AI offline (set NVIDIA_API_KEY)",
+      backResume: "← Resume",
+      loginRequiredTitle: "Job OS — sign in required",
+      loginRequiredDesc: "Each account gets a private workspace. Your jobs, packs, and resume never mix with other users.",
+      loginCta: "Sign in or create account",
+      applyToday: "Apply today",
+      ranked: "Ranked",
+      applied: "Applied",
+      total: "Total",
+      syncFolder: "Sync folder → queue",
+      sourceInbox: "Source inbox",
+      scorePack: "Score + Pack",
+      forceRepack: "Force repack",
+      aiTailor: "AI tailor selected",
+      importLegacy: "Import my legacy jobs",
+      addJob: "+ Add job",
+      pasteJobTitle: "Paste a job posting",
+      companyPh: "Company",
+      rolePh: "Role title",
+      urlPh: "Job URL",
+      descPh: "Paste full job description here…",
+      saveJob: "Save to queue",
+      saving: "Saving…",
+      emptyQueue: "No jobs. Click Sync folder → queue or + Add job.",
+      selectJob: "Select a job to preview application pack, paste bank, interview prep, and follow-ups.",
+      noPack: "(no generated files yet — run Score + Pack)",
+      copyPaste: "Copy paste bank",
+      exportPdf: "Export PDF",
+      open: "Open",
+      copy: "Copy",
+      markApplied: "Applied",
+      skip: "Skip",
+      sessionExpired: "Session expired — sign in again",
+      footer: "v1.4.3 — Obscura ATS fetch + faster apply flow.",
+      finderTitle: "Find jobs",
+      finderSubtitle: "Feeds + Obscura on ATS links (Lever, Greenhouse). You approve — no LinkedIn bots.",
+      finderSearch: "Search feeds",
+      finderSearching: "Searching…",
+      finderImport: "Add to queue",
+      finderFetchUrl: "Fetch & pack",
+      finderFetchUrlPh: "https://jobs.lever.co/…",
+      finderBookmarklet: "Capture bookmarklet",
+      finderFit: "Fit",
+      finderQueued: "in queue",
+      finderNoResults: "Search to load remote React/TS roles from public APIs.",
+      finderKeywordsPh: "react, typescript, frontend, remote",
+      finderImportPack: "Import & pack",
+      finderObscuraOn: "Obscura ready",
+      finderObscuraOff: "Obscura off — npm run obscura:install",
+      finderPasteBookmarklet: "Paste helper",
+      quickApplyTitle: "Next to apply",
+      quickApplyOpen: "Open form",
+      quickApplyCopy: "Copy paste bank",
+      quickApplyDone: "Mark applied",
+    },
   },
   es: {
     appName: "CatResumeMaker",
@@ -155,7 +309,7 @@ export const resources: Record<'en' | 'es', Translations> = {
     continuousPipeline: "Canal continuo de actualización de currículums",
     resetDemo: "Reiniciar Demo",
     printExport: "Imprimir / Exportar PDF",
-    apiMissing: "IA sin conexión. Configure FREELLMAPI_API_KEY (FreeLLMAPI) o GEMINI_API_KEY en su `.env` para sincronizar.",
+    apiMissing: "IA sin conexión. Configure NVIDIA_API_KEY, FREELLMAPI_API_KEY o GEMINI_API_KEY en `.env`.",
     apiConnected: "Sistema Conectado y Listo",
     apiChecking: "Comprobando conexión de la API...",
     apiError: "Línea de conexión inalcanzable. Verifique conexión de servidor.",
@@ -220,6 +374,83 @@ export const resources: Record<'en' | 'es', Translations> = {
     tip2: "Describe en párrafos sencillos tus responsabilidades, proyectos insignia e hitos educativos.",
     tip3: "Pega bloques de texto de currículums en PDF que perdieron su estructura al pasar por escáneres previos.",
     warningOverwritingTitle: "⚠️ Resintetizando tu archivo:",
-    warningOverwritingDesc: "Proporcionar texto sin procesar analizará y fabricará un perfil central completamente nuevo, sobrescribiendo los campos actuales. Asegúrate de guardar tus datos previos."
+    warningOverwritingDesc: "Proporcionar texto sin procesar analizará y fabricará un perfil central completamente nuevo, sobrescribiendo los campos actuales. Asegúrate de guardar tus datos previos.",
+
+    signIn: "Ingresar",
+    signOut: "Salir",
+    jobOsNav: "Job OS",
+
+    auth: {
+      signInTitle: "Iniciar sesión",
+      registerTitle: "Crear cuenta",
+      privacyNote: "Tu currículum y datos de Job OS quedan en tu espacio privado — no se comparten con otros usuarios.",
+      fullName: "Nombre completo",
+      email: "Correo electrónico",
+      password: "Contraseña (mín. 8 caracteres)",
+      submitSignIn: "Iniciar sesión",
+      submitRegister: "Crear cuenta",
+      switchToRegister: "¿No tenés cuenta? Registrate",
+      switchToSignIn: "¿Ya tenés cuenta? Iniciá sesión",
+      failed: "Error",
+    },
+
+    jobOs: {
+      title: "Job OS",
+      subtitle: "Fuente → puntaje → pack IA → postular",
+      aiOffline: "IA sin conexión (configurá NVIDIA_API_KEY)",
+      backResume: "← Currículum",
+      loginRequiredTitle: "Job OS — requiere iniciar sesión",
+      loginRequiredDesc: "Cada cuenta tiene su espacio privado. Tus trabajos, packs y CV no se mezclan con otros usuarios.",
+      loginCta: "Ingresar o crear cuenta",
+      applyToday: "Postular hoy",
+      ranked: "Rankeados",
+      applied: "Postulados",
+      total: "Total",
+      syncFolder: "Sincronizar carpeta → cola",
+      sourceInbox: "Importar inbox",
+      scorePack: "Puntuar + Pack",
+      forceRepack: "Forzar repack",
+      aiTailor: "Personalizar con IA",
+      importLegacy: "Importar trabajos legacy",
+      addJob: "+ Agregar trabajo",
+      pasteJobTitle: "Pegá una publicación",
+      companyPh: "Empresa",
+      rolePh: "Rol",
+      urlPh: "URL del trabajo",
+      descPh: "Pegá la descripción completa acá…",
+      saveJob: "Guardar en cola",
+      saving: "Guardando…",
+      emptyQueue: "Sin trabajos. Usá Sincronizar carpeta o + Agregar trabajo.",
+      selectJob: "Seleccioná un trabajo para ver pack, paste bank, entrevista y seguimientos.",
+      noPack: "(sin archivos generados — ejecutá Puntuar + Pack)",
+      copyPaste: "Copiar paste bank",
+      exportPdf: "Exportar PDF",
+      open: "Abrir",
+      copy: "Copiar",
+      markApplied: "Postulado",
+      skip: "Omitir",
+      sessionExpired: "Sesión expirada — volvé a ingresar",
+      footer: "v1.4.3 — Obscura ATS + flujo rápido.",
+      finderTitle: "Buscar trabajos",
+      finderSubtitle: "Feeds + Obscura en ATS (Lever, Greenhouse). Vos aprobás — sin bots de LinkedIn.",
+      finderSearch: "Buscar",
+      finderSearching: "Buscando…",
+      finderImport: "Agregar a cola",
+      finderFetchUrl: "Obtener y pack",
+      finderFetchUrlPh: "https://jobs.lever.co/…",
+      finderBookmarklet: "Bookmarklet captura",
+      finderFit: "Fit",
+      finderQueued: "en cola",
+      finderNoResults: "Buscá roles React/TS remotos en APIs públicas.",
+      finderKeywordsPh: "react, typescript, frontend, remote",
+      finderImportPack: "Importar y pack",
+      finderObscuraOn: "Obscura listo",
+      finderObscuraOff: "Obscura off — npm run obscura:install",
+      finderPasteBookmarklet: "Ayudante paste",
+      quickApplyTitle: "Siguiente a postular",
+      quickApplyOpen: "Abrir formulario",
+      quickApplyCopy: "Copiar paste bank",
+      quickApplyDone: "Marcar postulado",
+    },
   }
 };

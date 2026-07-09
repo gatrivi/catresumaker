@@ -1,0 +1,10 @@
+# Optional Obscura sidecar for Job OS ATS fetch (allowlisted URLs only).
+# Usage: docker compose -f docker-compose.obscura.yml up -d
+# Then set OBSCURA_BIN=obscura if running app on host, or use CDP at ws://localhost:9222
+services:
+  obscura:
+    image: h4ckf0r0day/obscura:latest
+    ports:
+      - "127.0.0.1:9222:9222"
+    command: ["serve", "--port", "9222", "--stealth"]
+    restart: unless-stopped

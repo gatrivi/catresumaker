@@ -1,2 +1,4 @@
 node_modules
-.env  
+.env
+data/
+bin/obscura/

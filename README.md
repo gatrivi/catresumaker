@@ -17,19 +17,26 @@ Traditional resumes are static, lagging documents. Software developers build inc
 
 ---
 
+## Deploy (Railway / Docker)
+
+See **[DEPLOY.md](./DEPLOY.md)** — one URL serves the **frontend at `/`** and API at `/api/*`.
+
+Quick Railway: connect repo, set `JWT_SECRET` + LLM keys, health check `/` (not `/api/health`).
+
 ## 🧪 Local Dev (run on your machine)
 
 1. Install dependencies:
    `npm install`
 2. Create a local env file:
    - Copy `.env.example` to `.env`
-   - Set `FREELLMAPI_API_KEY=...` (preferred)
+   - Set `NVIDIA_API_KEY=...` (preferred — GLM-5.2 via NVIDIA NIM)
+   - Or `FREELLMAPI_API_KEY=...` / `GEMINI_API_KEY=...`
 3. Start the app:
    `npm run dev`
 4. Open in your browser:
    `http://localhost:3000`
 
-Note: if both `FREELLMAPI_API_KEY` and `GEMINI_API_KEY` are missing, the UI still loads, but the AI endpoints will be unavailable (you'll see an “AI offline” status).
+Note: if all AI keys are missing, the UI still loads, but AI endpoints and AI-tailored job packs will fall back to templates.
 
 ## 🛠️ Step-by-Step Interactive Demo Walkthrough
 
@@ -114,3 +121,43 @@ To guarantee recruiter-ready privacy where even DB administrators cannot leak pr
 - **Mood Space**: Minimal, interstellar slate dark contrast, accented with cybernetic blue and warm indigo highlights.
 - **Simulated Page**: A true-to-life 1:1.414 aspect-ratio bounding box simulating physical paper dimensions.
 - **Dog Watermark Logo**: Features a visual representation of our beautiful launcher dog in the upper corner!
+
+---
+
+## Job OS P0 (local job application clerk)
+
+This repo also contains a local-first “Job OS” mode inside `job-cannon/`:
+
+### Commands
+- `npm run job:source`
+  - Parses `job-cannon/inbox/jobs.txt` (`---JOB---` blocks) and upserts `job-cannon/ApplyQueue.json`
+  - Writes per-job `job-cannon/jobs/<slug>/job.md` (queue only; no packs generated)
+- `npm run job:cannon`
+  - Scores queue jobs and generates packs only when `decision === "APPLY"` and `fitScore >= 7`
+  - Updates `job-cannon/RankedJobs.md` + refreshes `job-cannon/PasteBank_All.txt`
+- `npm run cv:pdf`
+  - Converts `resume.md` to `dist/cv/Gaston_Trivi_React_Developer.pdf` (pdfkit)
+- `npm run job:pdf`
+  - Converts each generated `job-cannon/jobs/<slug>/generated/ApplicationPack.md` to `ApplicationPack.pdf`
+
+### Dashboard (UI)
+Open Job OS from the navbar **Job OS** button, or directly:
+- `http://localhost:3000/?jobos=1`
+
+Workflow in the dashboard:
+1. **Sync folder → queue** — imports seed jobs from `job-cannon/jobs/`
+2. **Source inbox** — parses `job-cannon/inbox/jobs.txt`
+3. **Score + Pack** — ranks queue, generates packs for APPLY jobs (fit ≥ 7)
+4. **+ Add job** — paste a posting directly from the browser
+5. Copy paste bank, export PDF, mark applied/rejected
+
+### Accounts (v1.3)
+Each user gets an isolated workspace under `data/users/<id>/` (resume, logs, Job OS queue, packs).
+
+1. Click **Sign in** on the resume app or open Job OS (login required there).
+2. **Register** with email + password (min 8 chars).
+3. Your local resume is auto-imported to your cloud workspace on first sign-in.
+4. **Import my legacy jobs** (Job OS) — one-time copy of the repo's `job-cannon/` into your account.
+
+Set `JWT_SECRET` in `.env` before sharing the app publicly.
+

@@ -28,7 +28,7 @@ export default function LogUpdateForm({
   onUpdateResume, 
   logs, 
   onSetLogs,
-  lang = 'en'
+  lang = 'es'
 }: LogUpdateFormProps) {
   const t = resources[lang];
   const [newLogText, setNewLogText] = useState("");
@@ -198,7 +198,7 @@ export default function LogUpdateForm({
 
       {/* Daily Progress Entry Card */}
       {!pendingDraft && (
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg">
+        <div className="glass-surface border border-slate-800 p-5 rounded-xl shadow-lg">
           <h3 className="font-semibold text-slate-100 text-base mb-1 inline-flex items-center gap-1.5">
             <Calendar className="w-4 h-4 text-sky-400" />
             {t.logTitle}
@@ -259,7 +259,7 @@ export default function LogUpdateForm({
 
       {/* Log Feed History */}
       {!pendingDraft && (
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg">
+        <div className="glass-surface border border-slate-800 p-5 rounded-xl shadow-lg">
           <div className="flex justify-between items-center mb-4">
             <h4 className="font-semibold text-slate-100 text-sm">
               {t.timelineTitle} ({logs.length})

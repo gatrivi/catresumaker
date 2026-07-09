@@ -1,0 +1,35 @@
+[full_name]
+Gastón Alejandro Trivi
+
+[email]
+gatrivi@gmail.com
+
+[phone]
++54 9 11 5619 9363
+
+[current_location]
+Olivos, Buenos Aires, Argentina
+
+[current_company]
+Independent React Developer / Freelance Contractor
+
+[linkedin]
+https://linkedin.com/in/gatrivi
+
+[github]
+https://github.com/gatrivi
+
+[portfolio]
+https://devtrivi.zengasoft.com
+
+[desired_salary]
+USD 36,000–42,000 / year, flexible depending on scope and benefits
+
+[start_date]
+Available to start within 2 weeks; open to an earlier start if useful.
+
+[application_100]
+Hi Unknown company team — I’m applying for the Bluelight Consulting - React Engineer - Remote role. I build production-ready React/TypeScript frontend features with clean component structure, predictable state, and careful API/data-contract integration. My main proof is CatIntAssist (https://github.com/gatrivi/catintassist), where I focus on reliability and fast iteration in real workflows (bilingual/medical domain). I work well with product, design, and backend teammates, and I’m comfortable debugging UI edge cases and shipping improvements quickly. I speak English fluently and Spanish native. Thanks for your time.
+
+[application_50]
+Hi Unknown company team — I’m applying for the Bluelight Consulting - React Engineer - Remote role. I build production-ready React/TypeScript UI with dependable state handling and careful API integration. My main proof is CatIntAssist, a reliability-focused React app used in real bilingual/medical workflows. English fluent.

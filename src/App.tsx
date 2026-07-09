@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { 
   FileText, 
   Sparkles, 
@@ -26,8 +26,20 @@ import ResumePreview from "./components/ResumePreview";
 import RawInputForm from "./components/RawInputForm";
 import LogUpdateForm from "./components/LogUpdateForm";
 import { resources } from "./utils/translations";
+import { loadLang, saveLang, type AppLang } from "./utils/lang";
+import JobOSDashboard from "./job-os/JobOSDashboard";
+import AppShell from "./components/AppShell";
+import AppLogo from "./components/AppLogo";
+import { useAuth } from "./auth/AuthContext";
+import AuthModal from "./auth/AuthModal";
+import { apiFetch } from "./auth/api";
 
 export default function App() {
+  const { user, logout } = useAuth();
+  const [authOpen, setAuthOpen] = useState(false);
+  const [cloudReady, setCloudReady] = useState(false);
+  const cloudLoadingRef = useRef(false);
+
   // Persistence with local storage
   const [resume, setResume] = useState<ResumeData>(() => {
     const saved = localStorage.getItem("catresumaker_resume");
@@ -53,12 +65,8 @@ export default function App() {
   const [isCheckingConnection, setIsCheckingConnection] = useState(false);
   const [isSlowWakeup, setIsSlowWakeup] = useState(false);
 
-  // Internationalization settings
-  const browserLang = navigator.language.startsWith('es') ? 'es' : 'en';
-  const [lang, setLang] = useState<'es' | 'en'>(() => {
-    const saved = localStorage.getItem("catresumaker_lang");
-    return (saved as any) || (browserLang as any);
-  });
+  // Internationalization — default Spanish; EN toggle in navbar
+  const [lang, setLang] = useState<AppLang>(loadLang);
 
   const [flashLang, setFlashLang] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -68,7 +76,7 @@ export default function App() {
 
   const t = resources[lang];
 
-  // Sync states to local storage
+  // Sync states to local storage (guest) + cloud when signed in
   useEffect(() => {
     localStorage.setItem("catresumaker_resume", JSON.stringify(resume));
   }, [resume]);
@@ -82,10 +90,68 @@ export default function App() {
   }, [templateId]);
 
   useEffect(() => {
-    localStorage.setItem("catresumaker_lang", lang);
+    saveLang(lang);
   }, [lang]);
 
-  // Track idle state: if first-time user is idle for 2s, flash the language toggle
+  // Load cloud resume when user signs in
+  useEffect(() => {
+    if (!user) {
+      setCloudReady(false);
+      cloudLoadingRef.current = false;
+      return;
+    }
+    cloudLoadingRef.current = true;
+    setCloudReady(false);
+    (async () => {
+      try {
+        const res = await apiFetch("/api/user/resume");
+        const data = await res.json();
+        if (data.resume) {
+          setResume(data.resume);
+        } else {
+          const local = localStorage.getItem("catresumaker_resume");
+          if (local) {
+            const parsed = JSON.parse(local);
+            await apiFetch("/api/user/import-local", {
+              method: "POST",
+              body: JSON.stringify({
+                resume: parsed,
+                logs: JSON.parse(localStorage.getItem("catresumaker_logs") || "[]"),
+                settings: { templateId, lang },
+              }),
+            });
+            setResume(parsed);
+          }
+        }
+        const logsRes = await apiFetch("/api/user/logs");
+        const logsData = await logsRes.json();
+        if (Array.isArray(logsData.logs) && logsData.logs.length) setLogs(logsData.logs);
+        const setRes = await apiFetch("/api/user/settings");
+        const setData = await setRes.json();
+        if (setData.settings?.templateId) setTemplateId(setData.settings.templateId);
+        if (setData.settings?.lang) setLang(setData.settings.lang);
+      } finally {
+        cloudLoadingRef.current = false;
+        setCloudReady(true);
+      }
+    })();
+  }, [user?.id]);
+
+  // Push resume/logs to cloud (debounced) when signed in — skip while cloud load in flight
+  useEffect(() => {
+    if (!user || !cloudReady || cloudLoadingRef.current) return;
+    const tmr = setTimeout(() => {
+      apiFetch("/api/user/resume", { method: "PUT", body: JSON.stringify({ resume }) }).catch(() => {});
+      apiFetch("/api/user/logs", { method: "PUT", body: JSON.stringify({ logs }) }).catch(() => {});
+      apiFetch("/api/user/settings", {
+        method: "PUT",
+        body: JSON.stringify({ settings: { templateId, lang } }),
+      }).catch(() => {});
+    }, 800);
+    return () => clearTimeout(tmr);
+  }, [user, cloudReady, resume, logs, templateId, lang]);
+
+  // Track idle state:
   useEffect(() => {
     if (!hasVisitedBefore) {
       let isIdle = true;
@@ -331,8 +397,22 @@ export default function App() {
     });
   };
 
+  const showJobOS =
+    typeof window !== "undefined" &&
+    (new URLSearchParams(window.location.search).get("jobos") === "1" ||
+      window.location.hash === "#jobos");
+
+  if (showJobOS) {
+    return (
+      <AppShell>
+        <JobOSDashboard />
+      </AppShell>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-200 flex flex-col font-sans select-none antialiased">
+    <AppShell>
+    <div className="min-h-screen flex flex-col select-none">
       {/* Print-Only helper warning overlay (hidden on actual papers) */}
       {showPrintHint && (
         <div className="bg-sky-600 text-white py-2 px-4 text-xs font-semibold flex justify-between items-center no-print shadow-md tracking-wide animate-in fade-in duration-200">
@@ -364,35 +444,11 @@ export default function App() {
       )}
 
       {/* Primary Navigation Hub */}
-      <nav className="no-print bg-slate-900 border-b border-slate-800 sticky top-0 z-40" id="global-navbar">
+      <nav className="no-print glass-nav border-b border-slate-800 sticky top-0 z-40" id="global-navbar">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             {/* The adorable custom dog app icon requested! */}
-            <div className="relative group shrink-0">
-              <svg
-                viewBox="0 0 64 64"
-                role="img"
-                aria-label="Dog Icon Logo"
-                className="w-10 h-10 rounded-xl border border-slate-700 shadow-md transform group-hover:scale-105 transition-all outline-none bg-slate-950"
-              >
-                <defs>
-                  <linearGradient id="dogGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#38bdf8" />
-                    <stop offset="100%" stopColor="#818cf8" />
-                  </linearGradient>
-                </defs>
-                <rect x="4" y="4" width="56" height="56" rx="14" fill="#0f172a" stroke="#334155" strokeWidth="2" />
-                <path d="M24 22 L18 10 L30 16 Z" fill="url(#dogGrad)" opacity="0.95" />
-                <path d="M40 22 L46 10 L34 16 Z" fill="url(#dogGrad)" opacity="0.95" />
-                <circle cx="32" cy="34" r="16" fill="url(#dogGrad)" opacity="0.95" />
-                <circle cx="25" cy="34" r="2.6" fill="#0b1220" />
-                <circle cx="39" cy="34" r="2.6" fill="#0b1220" />
-                <path d="M28 40 C30 42.5,34 42.5,36 40" stroke="#0b1220" strokeWidth="2.2" fill="none" strokeLinecap="round" />
-                <path d="M30 37 L32.2 39.2 L30 41.4 Z" fill="#0b1220" opacity="0.9" />
-                <rect x="22" y="44" width="20" height="8" rx="4" fill="#38bdf8" opacity="0.35" />
-              </svg>
-              <span className="absolute -bottom-1 -right-1 bg-sky-500 w-3 h-3 rounded-full border-2 border-slate-900 animate-pulse" />
-            </div>
+            <AppLogo size="md" />
             <div>
               <h1 className="font-bold text-white text-base flex items-center gap-1.5 leading-none">
                 {t.appName}
@@ -432,6 +488,32 @@ export default function App() {
                     : t.apiMissing}
               </span>
             </div>
+
+            <button
+              onClick={() => { window.location.href = "/?jobos=1"; }}
+              className="p-2 rounded-lg border text-xs font-bold transition-all bg-emerald-950/40 border-emerald-800/50 text-emerald-300 hover:bg-emerald-950/70 flex items-center gap-1.5 cursor-pointer"
+              title="Job OS — application pipeline"
+            >
+              <Briefcase className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{t.jobOsNav}</span>
+            </button>
+
+            {user ? (
+              <button
+                onClick={logout}
+                className="p-2 rounded-lg border text-xs bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750 max-w-[120px] truncate"
+                title={user.email}
+              >
+                {user.name.split(" ")[0]}
+              </button>
+            ) : (
+              <button
+                onClick={() => setAuthOpen(true)}
+                className="p-2 rounded-lg border text-xs font-bold bg-sky-950/50 border-sky-800/50 text-sky-300 hover:bg-sky-950/80"
+              >
+                {t.signIn}
+              </button>
+            )}
 
             {/* Language Selection Toggle and Idle Flash trigger */}
             <button
@@ -485,7 +567,7 @@ export default function App() {
       {/* Tutorial Guide Onboarding Popover / Modal Overlay */}
       {showTutorial && (
         <div className="fixed inset-0 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200 select-text">
-          <div className="bg-slate-900 border border-slate-800 max-w-lg w-full rounded-2xl p-6 shadow-2xl relative text-left">
+          <div className="glass-surface border border-slate-800 max-w-lg w-full rounded-2xl p-6 shadow-2xl relative text-left">
             <button 
               onClick={handleCloseTutorial}
               className="absolute right-4 top-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-all cursor-pointer"
@@ -558,7 +640,7 @@ export default function App() {
         <div className="no-print lg:col-span-5 flex flex-col gap-6" id="workspace-controls">
           
           {/* Template Choices Selector Grid */}
-          <div className="bg-slate-900 rounded-xl border border-slate-800 p-5 shadow-lg" id="widget-template-picker">
+          <div className="glass-surface rounded-xl border border-slate-800 p-5 shadow-lg" id="widget-template-picker">
             <h3 className="font-semibold text-slate-400 text-xs uppercase tracking-wider mb-3 font-mono">
               {t.renderingTemplate}
             </h3>
@@ -593,7 +675,7 @@ export default function App() {
           </div>
 
           {/* Core Action Menu Tags Container */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-1 flex shadow-lg shrink-0" id="tab-controls-container">
+          <div className="glass-surface border border-slate-800 rounded-xl p-1 flex shadow-lg shrink-0" id="tab-controls-container">
             <button
               onClick={() => setActiveTab('timeline')}
               className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
@@ -664,7 +746,7 @@ export default function App() {
 
           {/* TAB 3: Precision Tweaks Manual Editor */}
           {activeTab === 'edit-fields' && (
-            <div className="bg-slate-900 rounded-xl border border-slate-800 p-5 shadow-lg animate-in fade-in duration-150 flex flex-col gap-5">
+            <div className="glass-surface rounded-xl border border-slate-800 p-5 shadow-lg animate-in fade-in duration-150 flex flex-col gap-5">
               
               {/* Internal Category menu list selectors */}
               <div className="flex border-b border-slate-850 pb-2 flex-wrap gap-1">
@@ -1083,7 +1165,7 @@ export default function App() {
       </main>
 
       {/* Footer System Branding Grid with watermark representation */}
-      <footer className="bg-slate-950 border-t border-slate-900 py-6 mt-12 text-center text-xs text-slate-500 no-print" id="global-footer">
+      <footer className="glass-nav border-t border-slate-900 py-6 mt-12 text-center text-xs text-slate-500 no-print" id="global-footer">
         <p className="font-semibold text-slate-400 leading-normal flex items-center justify-center gap-1.5 font-mono uppercase tracking-widest text-[10px]">
           {t.footerTag}
         </p>
@@ -1094,6 +1176,9 @@ export default function App() {
           ⚡ {t.watermark} ⚡
         </p>
       </footer>
+
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} lang={lang} />
     </div>
+    </AppShell>
   );
 }

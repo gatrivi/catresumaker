@@ -1,0 +1,1 @@
+PLACEHOLDER seed job text (not full source). Role: React Engineer. Requires 3+ years React/prof dev; large/complex systems; degree required; extreme ownership; CI/CD; Remote LATAM; English required.

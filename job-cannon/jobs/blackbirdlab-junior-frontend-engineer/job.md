@@ -1,0 +1,1 @@
+PLACEHOLDER seed job text (not full source). Role: Junior Frontend Engineer, Remote LATAM. Mentions React, TypeScript, Tailwind, GraphQL advantages; English upper-intermediate; component-driven UI.

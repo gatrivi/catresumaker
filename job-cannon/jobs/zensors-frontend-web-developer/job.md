@@ -1,0 +1,1 @@
+PLACEHOLDER seed job text (not full source). Role: Frontend Web Developer, Remote Internship listing. Requires React SPA experience, responsive CSS, Git, component-driven development; mentions Data structures & Algorithms; Node/Docker/Postgres a plus.

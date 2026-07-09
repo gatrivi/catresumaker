@@ -1,0 +1,25 @@
+{
+  "fit": {
+    "score0to10": 8,
+    "applyDecision": "APPLY",
+    "reasons": [
+      "React mentioned",
+      "TypeScript mentioned",
+      "Vite mentioned",
+      "senior/lead language present (risk)",
+      "Remote mentioned",
+      "LATAM/Argentina language present",
+      "English requirement mentioned",
+      "API/integration mentioned",
+      "frontend/product language present"
+    ],
+    "riskFlags": [
+      "senior-only phrasing",
+      "degree hard requirement"
+    ]
+  },
+  "proofProjectId": "tmmstore",
+  "proofProjectName": "Tmm Store",
+  "proofProjectLink": "https://github.com/gatrivi/Tmm-store",
+  "updatedAtISO": "2026-06-25T05:26:39.688Z"
+}

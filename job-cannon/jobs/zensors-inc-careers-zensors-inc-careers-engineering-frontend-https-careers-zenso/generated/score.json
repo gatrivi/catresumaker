@@ -1,0 +1,21 @@
+{
+  "fit": {
+    "score0to10": 7,
+    "applyDecision": "APPLY",
+    "reasons": [
+      "React mentioned",
+      "TypeScript mentioned",
+      "senior/lead language present (risk)",
+      "Remote mentioned",
+      "API/integration mentioned",
+      "frontend/product language present"
+    ],
+    "riskFlags": [
+      "senior-only phrasing"
+    ]
+  },
+  "proofProjectId": "catreader",
+  "proofProjectName": "CatReader",
+  "proofProjectLink": "https://github.com/gatrivi/catreader",
+  "updatedAtISO": "2026-06-25T05:26:39.693Z"
+}

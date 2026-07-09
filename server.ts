@@ -1,14 +1,14 @@
 import express from "express";
 import path from "path";
-import { fileURLToPath } from "url";
+import fs from "fs";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
+import { getLLMStatus, callLLMChat } from "./job-cannon/ai/llmClient";
+import { safeParseJson } from "./job-cannon/ai/safeJson";
+import { getDataRoot, getJobCannonRoot } from "./job-cannon/projectRoot";
+import { registerAuthAndUserRoutes } from "./server/routes/authAndJobs";
 
 dotenv.config();
-
-// ES module compatibility
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -17,60 +17,14 @@ app.use(express.json({ limit: "50mb" }));
 
 const hasGeminiKey = !!process.env.GEMINI_API_KEY;
 const hasFreeLLMApiKey = !!process.env.FREELLMAPI_API_KEY;
+const hasNvidiaKey = !!process.env.NVIDIA_API_KEY;
 
-const FREE_LLM_BASE_URL = process.env.FREELLMAPI_BASE_URL || "http://localhost:3001/v1";
-const FREE_LLM_MODEL = process.env.FREELLMAPI_MODEL || "auto";
-
-function safeParseJson(text: string): any {
-  const trimmed = text.trim();
-
-  // Common LLM habit: wrap JSON in markdown fences.
-  const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const candidate = fenceMatch ? fenceMatch[1].trim() : trimmed;
-
-  // If the model returns extra text, grab the first/last JSON braces range.
-  try {
-    return JSON.parse(candidate);
-  } catch {
-    const start = candidate.indexOf("{");
-    const end = candidate.lastIndexOf("}");
-    if (start !== -1 && end !== -1 && end > start) {
-      return JSON.parse(candidate.slice(start, end + 1));
-    }
-    throw new Error("Failed to parse JSON output from the AI model.");
-  }
+function safeParseJsonLocal(text: string): any {
+  return safeParseJson(text);
 }
 
-async function callFreeLLMChat(systemPrompt: string, userPrompt: string): Promise<string> {
-  const base = FREE_LLM_BASE_URL.replace(/\/$/, "");
-  const url = `${base}/chat/completions`;
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${process.env.FREELLMAPI_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: FREE_LLM_MODEL,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.2,
-    }),
-  });
-
-  if (!response.ok) {
-    const text = await response.text().catch(() => "");
-    throw new Error(`FreeLLMAPI request failed (${response.status}). ${text}`);
-  }
-
-  const data = await response.json();
-  const content = data?.choices?.[0]?.message?.content;
-  if (!content || typeof content !== "string") {
-    throw new Error("FreeLLMAPI returned an empty or invalid response.");
-  }
+async function callLLMForResume(systemPrompt: string, userPrompt: string): Promise<string> {
+  const { content } = await callLLMChat(systemPrompt, userPrompt, { temperature: 0.2 });
   return content;
 }
 
@@ -98,13 +52,21 @@ function getGeminiClient(): GoogleGenAI {
 
 // Global server check
 app.get("/api/health", (req, res) => {
+  const llm = getLLMStatus();
   res.json({
     status: "ok",
-    hasApiKey: hasGeminiKey || hasFreeLLMApiKey,
+    hasApiKey: llm.available,
     hasGeminiKey,
     hasFreeLLMApiKey,
+    hasNvidiaKey,
+    llmProvider: llm.provider,
+    llmModel: llm.model,
   });
 });
+
+const DATA_ROOT = getDataRoot();
+const LEGACY_JOB_CANNON = getJobCannonRoot();
+registerAuthAndUserRoutes(app, DATA_ROOT, LEGACY_JOB_CANNON);
 
 // JSON Schema for Resume Parsing
 const RESUME_SCHEMA = {
@@ -252,16 +214,16 @@ ${rawText}
 """
     `;
 
-    if (!hasFreeLLMApiKey && !hasGeminiKey) {
+    if (!getLLMStatus().available && !hasGeminiKey) {
       throw new Error(
-        "AI offline. Set FREELLMAPI_API_KEY (FreeLLMAPI) or GEMINI_API_KEY in your local `.env` before using the AI endpoints."
+        "AI offline. Set NVIDIA_API_KEY, FREELLMAPI_API_KEY, or GEMINI_API_KEY in your local `.env` before using the AI endpoints."
       );
     }
 
-    if (hasFreeLLMApiKey) {
+    if (getLLMStatus().available || hasFreeLLMApiKey || hasNvidiaKey) {
       const systemInstruction = "You output ONLY valid JSON. " + RESUME_JSON_STRUCTURE;
-      const content = await callFreeLLMChat(systemInstruction, prompt);
-      const parsedData = safeParseJson(content);
+      const content = await callLLMForResume(systemInstruction, prompt);
+      const parsedData = safeParseJsonLocal(content);
       res.json({ success: true, resume: parsedData });
       return;
     }
@@ -344,16 +306,16 @@ Instructions:
 4. Output the strict updated resume along with this change history.
 `;
 
-    if (!hasFreeLLMApiKey && !hasGeminiKey) {
+    if (!getLLMStatus().available && !hasGeminiKey) {
       throw new Error(
-        "AI offline. Set FREELLMAPI_API_KEY (FreeLLMAPI) or GEMINI_API_KEY in your local `.env` before using the AI endpoints."
+        "AI offline. Set NVIDIA_API_KEY, FREELLMAPI_API_KEY, or GEMINI_API_KEY in your local `.env` before using the AI endpoints."
       );
     }
 
-    if (hasFreeLLMApiKey) {
+    if (getLLMStatus().available || hasFreeLLMApiKey || hasNvidiaKey) {
       const systemInstruction = "You output ONLY valid JSON. " + UPDATE_RESPONSE_JSON_STRUCTURE;
-      const content = await callFreeLLMChat(systemInstruction, prompt);
-      const updateResponse = safeParseJson(content);
+      const content = await callLLMForResume(systemInstruction, prompt);
+      const updateResponse = safeParseJsonLocal(content);
       res.json({
         success: true,
         explanationOfChanges: updateResponse.explanationOfChanges,
@@ -397,7 +359,12 @@ Instructions:
 
 // Configure Vite or Static Asset Serving
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  const distPath = path.join(process.cwd(), "dist");
+  const hasDist = fs.existsSync(path.join(distPath, "index.html"));
+  const isProduction =
+    process.env.NODE_ENV === "production" || (hasDist && process.env.USE_VITE_DEV !== "1");
+
+  if (!isProduction) {
     console.log("Loading Vite Dev Mode...");
     const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
@@ -406,16 +373,24 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    console.log("Loading Production assets form 'dist'...");
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
+    console.log("Serving production SPA from dist/ (API at /api/*)...");
+    app.use(express.static(distPath, { index: false, maxAge: "1h" }));
+
+    // Frontend default: root and all non-API routes → index.html
+    app.get("/", (_req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
+    });
+
+    app.get("*", (req, res, next) => {
+      if (req.path.startsWith("/api/")) return next();
+      res.sendFile(path.join(distPath, "index.html"), (err) => {
+        if (err) next(err);
+      });
     });
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server started on http://0.0.0.0:${PORT}`);
+    console.log(`Server on http://0.0.0.0:${PORT} (${isProduction ? "production SPA + /api" : "dev"})`);
   });
 }
 

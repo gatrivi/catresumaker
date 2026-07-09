@@ -7,7 +7,7 @@ interface RawInputFormProps {
   lang?: 'es' | 'en';
 }
 
-export default function RawInputForm({ onSuccess, lang = 'en' }: RawInputFormProps) {
+export default function RawInputForm({ onSuccess, lang = 'es' }: RawInputFormProps) {
   const t = resources[lang];
   const [rawText, setRawText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -127,7 +127,7 @@ Spoken languages: English and German.`);
   ];
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
+    <div className="glass-surface border border-slate-800 rounded-xl p-6 shadow-xl">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 bg-gradient-to-tr from-indigo-500 to-sky-500 rounded-lg text-white">
           <Sparkles className="w-5 h-5 animate-pulse" />

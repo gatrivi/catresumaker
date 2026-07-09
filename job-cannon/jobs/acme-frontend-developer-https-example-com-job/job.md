@@ -1,0 +1,6 @@
+URL: https://example.com/job
+Title: Frontend Developer
+Company: Acme
+Source: Pasted
+
+Paste full job text here...

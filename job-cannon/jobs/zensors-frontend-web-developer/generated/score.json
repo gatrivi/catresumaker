@@ -1,0 +1,16 @@
+{
+  "fit": {
+    "score0to10": 5,
+    "applyDecision": "MAYBE",
+    "reasons": [
+      "React mentioned",
+      "Remote mentioned",
+      "frontend/product language present"
+    ],
+    "riskFlags": []
+  },
+  "proofProjectId": "catintassist",
+  "proofProjectName": "CatIntAssist",
+  "proofProjectLink": "https://github.com/gatrivi/catintassist",
+  "updatedAtISO": "2026-06-25T05:26:39.692Z"
+}
