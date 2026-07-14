@@ -9,6 +9,7 @@ export type DiscoveredJob = {
   location?: string;
   tags?: string[];
   previewFit?: number;
+  matchedSkills?: string[];
   alreadyQueued?: boolean;
 };
 
@@ -16,6 +17,10 @@ export type DiscoverSearchInput = {
   keywords?: string[];
   sources?: ("remotive" | "remoteok" | "arbeitnow" | "jobicy")[];
   limit?: number;
+  /** When true, rank/filter using resume + candidate profile */
+  matchProfile?: boolean;
+  /** Min profile fit score (0–10) when matchProfile is on */
+  minFit?: number;
 };
 
 export type FeedSource = NonNullable<DiscoverSearchInput["sources"]>[number];
@@ -25,4 +30,7 @@ export type DiscoverSearchResult = {
   sources: Record<FeedSource, boolean>;
   keywords: string[];
   fetchedAt: string;
+  matchProfile?: boolean;
+  minFit?: number;
+  profile?: { title: string; skillCount: number; hasResume: boolean };
 };

@@ -1,12 +1,45 @@
-# Job discovery (v1.4.3)
+# Job discovery (v1.4.5)
 
 Human-in-the-loop only — **no auto-apply**, **no LinkedIn/Indeed automation**.
 
+## Division of labor
+
+| Agent does | You do |
+|------------|--------|
+| Profile-matched search + fit score | Approve which jobs to queue |
+| Pack + AI tailor (when API key set) | Review pack |
+| Paste helper: fill empty fields / copy | Review highlighted fields |
+| Mark applied in Job OS | **Submit the application form** |
+
+## Apply assist (Paste helper)
+
+1. Job OS → drag **Paste helper** to bookmarks (while signed in — embeds token).
+2. **Prepare & open** on Next to apply → packs (AI if available) → opens form.
+3. On the form page → click Paste helper bookmarklet:
+   - **Fill matching fields** — empty inputs only, green outline
+   - Per-field **copy** buttons
+   - **Mark applied** after you submit
+4. You always click Submit yourself.
+
+Re-drag bookmarklets after login/logout (token is baked into the bookmark).
+
+## Profile-matched search (default)
+
+Job OS reads **your resume** (`resume.json` / `resume.md`) + candidate profile:
+
+- **Keywords** — title, skills, projects → feed search terms
+- **Fit score** — base rules + your skill overlap + location (LATAM/remote)
+- **Filter** — only jobs with ≥1 profile skill match, min fit **5/10**
+
+Toggle **Match my profile** off for raw keyword search only. Keep your resume updated in the main editor for best results.
+
+API: `GET /api/job-os/discover/profile` · `POST /api/job-os/discover/search` with `{ matchProfile: true, minFit: 5 }`
+
 ## Fastest path to apply
 
-1. **Job OS → Find jobs** → check roles → **Import & pack** (one click).
-2. Or paste a Lever/Greenhouse URL → **Fetch & pack** (Obscura).
-3. **Next to apply** banner → Open form → drag **Paste helper** bookmarklet → copy fields → **Mark applied**.
+1. **Find jobs** → check roles → **Import & pack**.
+2. **Prepare & open** → agent packs → form opens.
+3. **Paste helper** → Fill matching fields → you submit → Mark applied.
 
 ## Built-in feeds (Job OS → Buscar trabajos)
 

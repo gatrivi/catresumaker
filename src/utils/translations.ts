@@ -143,10 +143,14 @@ export interface Translations {
     finderObscuraOn: string;
     finderObscuraOff: string;
     finderPasteBookmarklet: string;
+    finderMatchProfile: string;
+    finderNoResume: string;
     quickApplyTitle: string;
     quickApplyOpen: string;
+    quickApplyPrepare: string;
     quickApplyCopy: string;
     quickApplyDone: string;
+    quickApplyHint: string;
   };
 }
 
@@ -279,9 +283,9 @@ export const resources: Record<'en' | 'es', Translations> = {
       markApplied: "Applied",
       skip: "Skip",
       sessionExpired: "Session expired — sign in again",
-      footer: "v1.4.3 — Obscura ATS fetch + faster apply flow.",
+      footer: "v1.4.5 — Apply assist: agent fills, you submit.",
       finderTitle: "Find jobs",
-      finderSubtitle: "Feeds + Obscura on ATS links (Lever, Greenhouse). You approve — no LinkedIn bots.",
+      finderSubtitle: "Searches feeds using your resume skills & title. Fit score = profile match.",
       finderSearch: "Search feeds",
       finderSearching: "Searching…",
       finderImport: "Add to queue",
@@ -296,10 +300,14 @@ export const resources: Record<'en' | 'es', Translations> = {
       finderObscuraOn: "Obscura ready",
       finderObscuraOff: "Obscura off — npm run obscura:install",
       finderPasteBookmarklet: "Paste helper",
+      finderMatchProfile: "Match my profile",
+      finderNoResume: "Add resume in editor for better matches",
       quickApplyTitle: "Next to apply",
       quickApplyOpen: "Open form",
+      quickApplyPrepare: "Prepare & open",
       quickApplyCopy: "Copy paste bank",
       quickApplyDone: "Mark applied",
+      quickApplyHint: "Agent packs · you open form · Paste helper fills · you submit",
     },
   },
   es: {
@@ -430,9 +438,9 @@ export const resources: Record<'en' | 'es', Translations> = {
       markApplied: "Postulado",
       skip: "Omitir",
       sessionExpired: "Sesión expirada — volvé a ingresar",
-      footer: "v1.4.3 — Obscura ATS + flujo rápido.",
+      footer: "v1.4.5 — Assist: agente rellena, vos enviás.",
       finderTitle: "Buscar trabajos",
-      finderSubtitle: "Feeds + Obscura en ATS (Lever, Greenhouse). Vos aprobás — sin bots de LinkedIn.",
+      finderSubtitle: "Busca feeds con tus skills y título del CV. Fit = match con tu perfil.",
       finderSearch: "Buscar",
       finderSearching: "Buscando…",
       finderImport: "Agregar a cola",
@@ -447,10 +455,14 @@ export const resources: Record<'en' | 'es', Translations> = {
       finderObscuraOn: "Obscura listo",
       finderObscuraOff: "Obscura off — npm run obscura:install",
       finderPasteBookmarklet: "Ayudante paste",
+      finderMatchProfile: "Según mi perfil",
+      finderNoResume: "Agregá tu CV en el editor para mejores matches",
       quickApplyTitle: "Siguiente a postular",
       quickApplyOpen: "Abrir formulario",
+      quickApplyPrepare: "Preparar y abrir",
       quickApplyCopy: "Copiar paste bank",
       quickApplyDone: "Marcar postulado",
+      quickApplyHint: "Agente arma pack · vos abrís form · Paste helper rellena · vos enviás",
     },
   }
 };

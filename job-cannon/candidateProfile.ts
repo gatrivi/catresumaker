@@ -21,7 +21,7 @@ export type CandidateProfile = {
 
 export const candidateProfile: CandidateProfile = {
   fullName: "Gastón Alejandro Trivi",
-  email: "gatrivi@gmail.com",
+  email: "devtrivi@zengasoft.com",
   phone: "+54 9 11 5619 9363",
   location: "Olivos, Buenos Aires, Argentina",
   linkedin: "https://linkedin.com/in/gatrivi",
@@ -37,7 +37,28 @@ export const candidateProfile: CandidateProfile = {
       name: "CatIntAssist",
       github: "https://github.com/gatrivi/catintassist",
       description:
-        "React workstation for bilingual medical interpretation workflows, built for reliability under real-time usage and frequent updates.",
+        "Daily-use React interpreter workstation: live EN↔ES STT, tab/mic/VB-Cable audio routing, reconnect diagnostics, productivity tracking.",
+    },
+    {
+      id: "tmmstore",
+      name: "Tmm Store / Trufi",
+      github: "https://github.com/gatrivi/Tmm-store",
+      description:
+        "White-label SMB ordering SPA (Menu/Pedidos/Premium): cart/checkout, WhatsApp, MercadoPago, branded admin.",
+    },
+    {
+      id: "catts",
+      name: "CatTS",
+      github: "https://github.com/gatrivi/catts",
+      description:
+        "Local audiobook + voice-clone stack (Kokoro/XTTS, Whisper, Argos): FastAPI jobs, live interpreting TTS, CPU/AMD.",
+    },
+    {
+      id: "rosario",
+      name: "Rosario Cards",
+      github: "https://github.com/gatrivi/Rosario-cards-v1",
+      description:
+        "Visual-first digital rosary: interactive bead graph, pinch-zoom, hold-to-charge prayer UX, mobile-first offline.",
     },
     {
       id: "catreader",
@@ -45,13 +66,6 @@ export const candidateProfile: CandidateProfile = {
       github: "https://github.com/gatrivi/catreader",
       description:
         "React/Vite document reader experience with persistence/sync and data-heavy UI behavior (PDF/TXT reading + enrichment flows).",
-    },
-    {
-      id: "tmmstore",
-      name: "Tmm Store",
-      github: "https://github.com/gatrivi/Tmm-store",
-      description:
-        "SMB React ordering flow: menu/cart/checkout UX plus operational admin patterns (real product-style frontend).",
     },
   ],
 };

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Search, Download, Link2, Bookmark, Zap, Clipboard } from "lucide-react";
-import { apiFetch } from "../auth/api";
+import { apiFetch, getToken } from "../auth/api";
 
 export type DiscoveredJob = {
   discoverId: string;
@@ -10,6 +10,7 @@ export type DiscoveredJob = {
   description: string;
   source: string;
   previewFit?: number;
+  matchedSkills?: string[];
   alreadyQueued?: boolean;
 };
 
@@ -33,6 +34,8 @@ type Props = {
     keywordsPh: string;
     obscuraOn: string;
     obscuraOff: string;
+    matchProfile: string;
+    noResume: string;
   };
   onImported: () => void;
   flash: (msg: string) => void;
@@ -40,15 +43,16 @@ type Props = {
 
 export default function JobFinderPanel({ labels, onImported, flash }: Props) {
   const [open, setOpen] = useState(true);
-  const [keywords, setKeywords] = useState(
-    () => localStorage.getItem(KW_KEY) || "react, typescript, frontend, remote"
-  );
+  const [keywords, setKeywords] = useState(() => localStorage.getItem(KW_KEY) || "");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<DiscoveredJob[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [fetchUrl, setFetchUrl] = useState("");
   const [feedStatus, setFeedStatus] = useState<Record<string, boolean>>({});
   const [obscuraOk, setObscuraOk] = useState<boolean | null>(null);
+  const [matchProfile, setMatchProfile] = useState(true);
+  const [profileTitle, setProfileTitle] = useState<string | null>(null);
+  const [hasResume, setHasResume] = useState(true);
   const searched = useRef(false);
 
   const runSearch = useCallback(async () => {
@@ -58,15 +62,19 @@ export default function JobFinderPanel({ labels, onImported, flash }: Props) {
         .split(/[,;\n]+/)
         .map((s) => s.trim())
         .filter(Boolean);
-      localStorage.setItem(KW_KEY, keywords);
+      if (keywords.trim()) localStorage.setItem(KW_KEY, keywords);
       const res = await apiFetch("/api/job-os/discover/search", {
         method: "POST",
-        body: JSON.stringify({ keywords: kws, limit: 35 }),
+        body: JSON.stringify({ keywords: kws, limit: 35, matchProfile, minFit: 5 }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Search failed");
       setResults(data.jobs ?? []);
       if (data.sources) setFeedStatus(data.sources);
+      if (data.profile?.title) setProfileTitle(data.profile.title);
+      if (data.keywords?.length && !localStorage.getItem(KW_KEY)) {
+        setKeywords(data.keywords.join(", "));
+      }
       setSelected(
         new Set((data.jobs ?? []).filter((j: DiscoveredJob) => !j.alreadyQueued).map((j: DiscoveredJob) => j.discoverId))
       );
@@ -75,23 +83,49 @@ export default function JobFinderPanel({ labels, onImported, flash }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [keywords, flash]);
+  }, [keywords, flash, matchProfile]);
 
   useEffect(() => {
-    apiFetch("/api/job-os/discover/status")
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.feeds) setFeedStatus(Object.fromEntries(d.feeds.map((f: string) => [f, true])));
-        if (typeof d.obscura?.available === "boolean") setObscuraOk(d.obscura.available);
-      })
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    if (searched.current) return;
-    searched.current = true;
-    runSearch();
+    let cancelled = false;
+    (async () => {
+      try {
+        const [profRes, statusRes] = await Promise.all([
+          apiFetch("/api/job-os/discover/profile"),
+          apiFetch("/api/job-os/discover/status"),
+        ]);
+        if (cancelled) return;
+        const prof = await profRes.json();
+        const status = await statusRes.json();
+        if (prof.profile) {
+          setProfileTitle(prof.profile.title ?? null);
+          setHasResume(!!prof.profile.hasResume);
+          if (!localStorage.getItem(KW_KEY) && Array.isArray(prof.profile.keywords)) {
+            setKeywords(prof.profile.keywords.join(", "));
+          }
+        }
+        if (status.feeds) setFeedStatus(Object.fromEntries(status.feeds.map((f: string) => [f, true])));
+        if (typeof status.obscura?.available === "boolean") setObscuraOk(status.obscura.available);
+      } catch {
+        /* ignore */
+      }
+      if (!cancelled && !searched.current) {
+        searched.current = true;
+        runSearch();
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [runSearch]);
+
+  const skipMatchToggle = useRef(true);
+  useEffect(() => {
+    if (skipMatchToggle.current) {
+      skipMatchToggle.current = false;
+      return;
+    }
+    if (searched.current) runSearch();
+  }, [matchProfile, runSearch]);
 
   async function importJobs(pack: boolean) {
     const jobs = results.filter((j) => selected.has(j.discoverId));
@@ -148,10 +182,21 @@ export default function JobFinderPanel({ labels, onImported, flash }: Props) {
   }
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
-  const bookmarkletHref =
-    "javascript:(function(){var s=document.createElement('script');s.src='" + origin + "/job-capture.js';document.body.appendChild(s);})();";
-  const pasteBookmarkletHref =
-    "javascript:(function(){var s=document.createElement('script');s.src='" + origin + "/paste-helper.js';document.body.appendChild(s);})();";
+  const token = getToken() || "";
+  // Embed token+API so bookmarklets work on ATS origins (localStorage is same-origin only).
+  function makeBookmarklet(scriptName: string) {
+    return (
+      "javascript:(function(){var o=" +
+      JSON.stringify(origin) +
+      ",t=" +
+      JSON.stringify(token) +
+      ",s=document.createElement('script');s.src=o+'/" +
+      scriptName +
+      "?v=2';s.dataset.api=o;s.dataset.token=t;document.body.appendChild(s);})();"
+    );
+  }
+  const bookmarkletHref = makeBookmarklet("job-capture.js");
+  const pasteBookmarkletHref = makeBookmarklet("paste-helper.js");
 
   return (
     <div className="glass-surface border border-slate-800 rounded-xl overflow-hidden">
@@ -177,7 +222,15 @@ export default function JobFinderPanel({ labels, onImported, flash }: Props) {
               </span>
             ) : null}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">{labels.subtitle}</div>
+          <div className="text-[11px] text-slate-400 mt-0.5">
+            {labels.subtitle}
+            {profileTitle ? (
+              <span className="text-sky-300/90"> · {profileTitle}</span>
+            ) : null}
+            {!hasResume ? (
+              <span className="text-amber-400/90"> · {labels.noResume}</span>
+            ) : null}
+          </div>
         </div>
         <span className="text-xs text-slate-500">{open ? "−" : "+"}</span>
       </button>
@@ -197,7 +250,16 @@ export default function JobFinderPanel({ labels, onImported, flash }: Props) {
             ))}
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 items-center">
+            <label className="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={matchProfile}
+                onChange={(e) => setMatchProfile(e.target.checked)}
+                className="rounded"
+              />
+              {labels.matchProfile}
+            </label>
             <input
               value={keywords}
               onChange={(e) => setKeywords(e.target.value)}
@@ -300,6 +362,11 @@ export default function JobFinderPanel({ labels, onImported, flash }: Props) {
                         {labels.fit}: {j.previewFit ?? "—"}/10
                       </span>
                       {j.alreadyQueued ? <span className="text-amber-500">{labels.queued}</span> : null}
+                      {j.matchedSkills?.length ? (
+                        <span className="text-emerald-500/90" title={j.matchedSkills.join(", ")}>
+                          +{j.matchedSkills.slice(0, 3).join(", ")}
+                        </span>
+                      ) : null}
                       {j.url ? (
                         <a
                           href={j.url}

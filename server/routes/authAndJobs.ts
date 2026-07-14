@@ -22,6 +22,7 @@ import {
   fetchJobUrlForUser,
   importDiscoveredJobs,
   searchPublicFeeds,
+  buildProfileSearchContext,
 } from "../../job-cannon/discovery/discover";
 import { getObscuraStatus, probeObscura } from "../../job-cannon/discovery/obscura";
 import type { DiscoveredJob } from "../../job-cannon/discovery/types";
@@ -30,6 +31,22 @@ export function registerAuthAndUserRoutes(app: Express, dataRoot: string, legacy
   const userStore = new UserStore(dataRoot);
   const userData = new UserDataStore(dataRoot);
   const requireAuth = createAuthMiddleware((id) => userStore.findById(id));
+
+  // Bookmarklets run on ATS origins — allow Bearer auth cross-origin (no cookies).
+  app.use("/api/job-os", (req, res, next) => {
+    const origin = req.headers.origin;
+    if (origin) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Vary", "Origin");
+      res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,OPTIONS");
+    }
+    if (req.method === "OPTIONS") {
+      res.sendStatus(204);
+      return;
+    }
+    next();
+  });
 
   async function asUser<T>(userId: string, fn: () => T | Promise<T>): Promise<T> {
     const ws = getUserWorkspace(userId, dataRoot);
@@ -264,6 +281,52 @@ export function registerAuthAndUserRoutes(app: Express, dataRoot: string, legacy
     res.json({ success: true, markdown: text });
   });
 
+  /** Ensure pack (+ AI if available), return apply URL + paste readiness. User still submits. */
+  app.post("/api/job-os/prepare-apply/:id", requireAuth, async (req: AuthedRequest, res: Response) => {
+    const id = String(req.params.id);
+    const llm = getLLMStatus();
+    try {
+      const payload = await asUser(req.user!.id, async () => {
+        const queue = loadApplyQueue();
+        const record = queue.find((j) => j.id === id || j.slug === id);
+        if (!record?.slug) return null;
+
+        const before = getJobArtifacts(record.slug);
+        const force = !!req.body?.force || !before?.pasteBank;
+        const cannon = await runJobCannon(generateForJob, { force });
+        const artifacts = getJobArtifacts(record.slug);
+        const fresh = loadApplyQueue().find((j) => j.id === record.id) ?? record;
+
+        return {
+          record: fresh,
+          artifacts,
+          cannon,
+          ready: !!(artifacts?.pasteBank && fresh.url),
+          applyUrl: fresh.url ?? null,
+          llm: { available: llm.available, provider: llm.provider, model: llm.model },
+        };
+      });
+      if (!payload) {
+        res.status(404).json({ success: false, error: "Job not found" });
+        return;
+      }
+      if (!payload.artifacts?.pasteBank) {
+        res.status(400).json({
+          success: false,
+          error: "No paste bank yet — need fit ≥7 APPLY (or force pack). Check Score + Pack.",
+          ready: false,
+          applyUrl: payload.applyUrl,
+          record: payload.record,
+        });
+        return;
+      }
+      const queue = await asUser(req.user!.id, () => loadApplyQueue());
+      res.json({ success: true, ...payload, queue });
+    } catch (e: any) {
+      res.status(500).json({ success: false, error: e.message ?? "prepare-apply failed" });
+    }
+  });
+
   app.post("/api/job-os/tailor/:id", requireAuth, async (req: AuthedRequest, res: Response) => {
     const id = String(req.params.id);
     const llm = getLLMStatus();
@@ -313,17 +376,38 @@ export function registerAuthAndUserRoutes(app: Express, dataRoot: string, legacy
 
   app.post("/api/job-os/discover/search", requireAuth, async (req: AuthedRequest, res) => {
     try {
-      const { keywords, sources, limit } = req.body ?? {};
+      const { keywords, sources, limit, matchProfile, minFit } = req.body ?? {};
       const result = await asUser(req.user!.id, () =>
         searchPublicFeeds({
           keywords: Array.isArray(keywords) ? keywords.map(String) : undefined,
           sources: Array.isArray(sources) ? sources : undefined,
           limit: limit ? Number(limit) : undefined,
+          matchProfile: matchProfile !== false,
+          minFit: minFit != null ? Number(minFit) : undefined,
         })
       );
       res.json({ success: true, ...result });
     } catch (e: any) {
       res.status(500).json({ success: false, error: e.message ?? "discover search failed" });
+    }
+  });
+
+  app.get("/api/job-os/discover/profile", requireAuth, async (req: AuthedRequest, res) => {
+    try {
+      const ctx = await asUser(req.user!.id, () => buildProfileSearchContext());
+      res.json({
+        success: true,
+        profile: {
+          name: ctx.name,
+          title: ctx.title,
+          location: ctx.location,
+          skills: ctx.skills.slice(0, 20),
+          keywords: ctx.keywords,
+          hasResume: ctx.hasResume,
+        },
+      });
+    } catch (e: any) {
+      res.status(500).json({ success: false, error: e.message ?? "profile load failed" });
     }
   });
 

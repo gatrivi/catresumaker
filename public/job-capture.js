@@ -1,11 +1,21 @@
 /**
  * Bookmarklet: capture the current job page into Job OS (human-initiated).
- * Drag to bookmarks bar while signed in at your CatResumeMaker origin.
+ * Load via Job OS bookmarklet (embeds token + API origin).
  */
 (function () {
-  const token = localStorage.getItem("catresumaker_token");
-  if (!token) {
-    alert("Sign in to CatResumeMaker first.");
+  const scripts = document.querySelectorAll("script[src*='job-capture.js']");
+  const last = scripts[scripts.length - 1];
+  const API =
+    (last && last.getAttribute("data-api")) ||
+    (last && last.src ? new URL(last.src).origin : "") ||
+    "";
+  const token =
+    (last && last.getAttribute("data-token")) ||
+    (typeof localStorage !== "undefined" && localStorage.getItem("catresumaker_token")) ||
+    "";
+
+  if (!API || !token) {
+    alert("Open Job OS, drag Capture bookmarklet to bookmarks again (while signed in).");
     return;
   }
 
@@ -42,7 +52,7 @@
   );
   if (!ok) return;
 
-  fetch("/api/job-os/capture", {
+  fetch(API + "/api/job-os/capture", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +69,7 @@
     .then((r) => r.json())
     .then((d) => {
       if (!d.success) throw new Error(d.error || "Capture failed");
-      alert("Job captured. Open Job OS → Score + Pack.");
+      alert("Job captured. Open Job OS → Import & pack / Score + Pack.");
     })
     .catch((e) => alert(e.message || String(e)));
 })();

@@ -170,6 +170,27 @@ export default function JobOSDashboard() {
     }
   }
 
+  async function prepareAndOpen(id: string, url?: string) {
+    setBusy("prepare");
+    try {
+      const res = await apiFetch(`/api/job-os/prepare-apply/${encodeURIComponent(id)}`, {
+        method: "POST",
+        body: JSON.stringify({}),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Prepare failed");
+      if (Array.isArray(data.queue)) setQueue(data.queue);
+      if (data.artifacts) setArtifacts(data.artifacts);
+      const openUrl = data.applyUrl || url;
+      if (openUrl) window.open(openUrl, "_blank", "noopener,noreferrer");
+      flash(data.llm?.available ? "Pack ready (AI) · use Paste helper on form" : "Pack ready · use Paste helper on form");
+    } catch (e: any) {
+      flash(e.message ?? "Prepare failed");
+    } finally {
+      setBusy(null);
+    }
+  }
+
   async function submitAddJob(e: React.FormEvent) {
     e.preventDefault();
     if (!addText.trim()) return;
@@ -333,6 +354,8 @@ export default function JobOSDashboard() {
             keywordsPh: j.finderKeywordsPh,
             obscuraOn: j.finderObscuraOn,
             obscuraOff: j.finderObscuraOff,
+            matchProfile: j.finderMatchProfile,
+            noResume: j.finderNoResume,
           }}
           onImported={reload}
           flash={flash}
@@ -345,17 +368,22 @@ export default function JobOSDashboard() {
               <div className="text-sm font-semibold text-white truncate">
                 {nextApply.company} — {nextApply.title}
               </div>
-              <div className="text-[11px] text-slate-400">
-                Fit {nextApply.fitScore ?? "—"}/10 · open form → paste helper → mark applied
-              </div>
+              <div className="text-[11px] text-slate-400">{j.quickApplyHint}</div>
             </div>
             <div className="flex flex-wrap gap-2">
+              <button
+                disabled={!!busy}
+                onClick={() => prepareAndOpen(nextApply.id, nextApply.url)}
+                className="text-xs px-3 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-700 font-semibold disabled:opacity-50"
+              >
+                {busy === "prepare" ? "…" : j.quickApplyPrepare}
+              </button>
               {nextApply.url ? (
                 <a
                   href={nextApply.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs px-3 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-700 font-semibold"
+                  className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700"
                 >
                   {j.quickApplyOpen}
                 </a>

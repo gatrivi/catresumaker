@@ -5,6 +5,12 @@ import { addJobDirect } from "../runner";
 import { fetchArbeitnowJobs, fetchJobicyJobs, fetchRemotiveJobs, fetchRemoteOkJobs } from "./feeds";
 import { fetchPageTextWithObscura } from "./obscura";
 import { checkFetchRateLimit, isBlockedUrl } from "./policy";
+import {
+  buildProfileSearchContext,
+  jobMatchesProfile,
+  scoreJobProfileFit,
+  type ProfileSearchContext,
+} from "./profileMatch";
 import type { DiscoveredJob, DiscoverSearchInput, DiscoverSearchResult, FeedSource } from "./types";
 
 export const DEFAULT_KEYWORDS = ["react", "typescript", "frontend", "javascript", "vite", "remote"];
@@ -18,17 +24,32 @@ const fetchers: Record<FeedSource, () => Promise<DiscoveredJob[]>> = {
   jobicy: fetchJobicyJobs,
 };
 
-function normKeywords(input?: string[]): string[] {
-  const kws = (input?.length ? input : DEFAULT_KEYWORDS).map((k) => k.trim().toLowerCase()).filter(Boolean);
-  return [...new Set(kws)];
+function normKeywords(input?: string[], profile?: ProfileSearchContext, matchProfile?: boolean): string[] {
+  const fromProfile = matchProfile && profile?.keywords.length ? profile.keywords : [];
+  const manual = (input ?? []).map((k) => k.trim().toLowerCase()).filter(Boolean);
+  const kws = manual.length ? manual : fromProfile.length ? fromProfile : DEFAULT_KEYWORDS;
+  return [...new Set(kws.map((k) => k.toLowerCase()))];
+}
+
+function jobHay(job: DiscoveredJob): string {
+  return `${job.title} ${job.company} ${job.description} ${(job.tags ?? []).join(" ")}`.toLowerCase();
 }
 
 function matchesKeywords(job: DiscoveredJob, keywords: string[]): boolean {
-  const hay = `${job.title} ${job.company} ${job.description} ${(job.tags ?? []).join(" ")}`.toLowerCase();
+  const hay = jobHay(job);
   return keywords.some((k) => hay.includes(k));
 }
 
-function markQueued(jobs: DiscoveredJob[]): DiscoveredJob[] {
+function scorePreview(job: DiscoveredJob, profile?: ProfileSearchContext): { fit: number; matchedSkills?: string[] } {
+  const text = `${job.title}\n${job.description}`;
+  if (profile) {
+    const r = scoreJobProfileFit(text, profile);
+    return { fit: r.score0to10, matchedSkills: r.matchedSkills.slice(0, 6) };
+  }
+  return { fit: scoreJobFit(job.description).score0to10 };
+}
+
+function markQueued(jobs: DiscoveredJob[], profile?: ProfileSearchContext): DiscoveredJob[] {
   const queue = loadApplyQueue();
   const urls = new Set(queue.map((q) => q.url?.toLowerCase()).filter(Boolean));
   const keys = new Set(queue.map((q) => `${q.company?.toLowerCase()}||${q.title?.toLowerCase()}`));
@@ -36,13 +57,18 @@ function markQueued(jobs: DiscoveredJob[]): DiscoveredJob[] {
   return jobs.map((j) => {
     const key = `${j.company.toLowerCase()}||${j.title.toLowerCase()}`;
     const alreadyQueued = !!(j.url && urls.has(j.url.toLowerCase())) || keys.has(key);
-    const previewFit = scoreJobFit(j.description).score0to10;
-    return { ...j, alreadyQueued, previewFit };
+    const scored = scorePreview(j, profile);
+    return { ...j, alreadyQueued, previewFit: scored.fit, matchedSkills: scored.matchedSkills };
   });
 }
 
+export { buildProfileSearchContext };
+
 export async function searchPublicFeeds(input: DiscoverSearchInput = {}): Promise<DiscoverSearchResult> {
-  const keywords = normKeywords(input.keywords);
+  const matchProfile = input.matchProfile !== false;
+  const profile = matchProfile ? buildProfileSearchContext() : undefined;
+  const minFit = matchProfile ? Math.min(Math.max(input.minFit ?? 5, 0), 10) : 0;
+  const keywords = normKeywords(input.keywords, profile, matchProfile);
   const sourcesIn = input.sources?.length
     ? input.sources.filter((s): s is FeedSource => ALL_SOURCES.includes(s as FeedSource))
     : ALL_SOURCES;
@@ -66,23 +92,33 @@ export async function searchPublicFeeds(input: DiscoverSearchInput = {}): Promis
   );
 
   const seen = new Set<string>();
-  const filtered = markQueued(
-    results
-      .filter((j) => matchesKeywords(j, keywords))
-      .filter((j) => {
-        if (seen.has(j.discoverId)) return false;
-        seen.add(j.discoverId);
-        return true;
-      })
-      .sort((a, b) => (b.previewFit ?? 0) - (a.previewFit ?? 0))
-      .slice(0, limit)
-  );
+  let filtered = results
+    .filter((j) => matchesKeywords(j, keywords))
+    .filter((j) => {
+      if (seen.has(j.discoverId)) return false;
+      seen.add(j.discoverId);
+      return true;
+    });
+
+  if (matchProfile && profile) {
+    filtered = filtered.filter((j) => jobMatchesProfile(jobHay(j), profile));
+  }
+
+  const ranked = markQueued(filtered, profile)
+    .filter((j) => (j.previewFit ?? 0) >= minFit)
+    .sort((a, b) => (b.previewFit ?? 0) - (a.previewFit ?? 0))
+    .slice(0, limit);
 
   return {
-    jobs: filtered,
+    jobs: ranked,
     sources: status,
     keywords,
     fetchedAt: new Date().toISOString(),
+    matchProfile,
+    minFit: matchProfile ? minFit : undefined,
+    profile: profile
+      ? { title: profile.title, skillCount: profile.skills.length, hasResume: profile.hasResume }
+      : undefined,
   };
 }
 
