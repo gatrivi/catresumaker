@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gaston Alejandro Trivi — Developer CV</title>
+  <style>
+    :root {
+      --ink: #1a1f24;
+      --muted: #4a5560;
+      --rule: #c5ccd3;
+      --accent: #0d4f6b;
+      --page: #f7f5f1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background: #e8e4dc;
+      line-height: 1.42;
+      font-size: 10pt;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 16px auto;
+      padding: 14mm 16mm 12mm;
+      background: var(--page);
+      box-shadow: 0 2px 16px rgba(0,0,0,.12);
+    }
+
+    header {
+      border-bottom: 2.5px solid var(--accent);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 22pt;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--accent);
+      line-height: 1.15;
+    }
+
+    .title { font-size: 11pt; font-weight: 600; margin-top: 4px; }
+
+    .contact { margin-top: 6px; font-size: 9pt; color: var(--muted); }
+    .contact a { color: var(--accent); text-decoration: none; }
+
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 11pt;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 3px;
+      margin: 12px 0 7px;
+    }
+
+    .summary { text-align: justify; }
+
+    .job { margin-bottom: 9px; }
+
+    .job-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .job-role { font-weight: 700; font-size: 10.5pt; }
+    .job-co { font-weight: 400; color: var(--muted); }
+    .job-dates { font-size: 9pt; color: var(--muted); white-space: nowrap; }
+
+    ul { margin: 4px 0 0 1.1em; padding: 0; }
+    li { margin-bottom: 3px; padding-left: 2px; }
+
+    .skills-grid { display: grid; gap: 4px; }
+
+    .skill-row {
+      display: grid;
+      grid-template-columns: 10em 1fr;
+      gap: 8px;
+    }
+
+    .skill-label { font-weight: 700; font-size: 9.5pt; color: var(--accent); }
+    .skill-val { font-size: 9.5pt; }
+
+    .proj { margin-bottom: 5px; }
+    .proj-name { font-weight: 700; }
+    .proj-link { color: var(--accent); text-decoration: none; font-size: 9pt; }
+    .proj-desc { font-size: 9.5pt; color: var(--ink); }
+
+    .edu-degree { font-weight: 700; }
+    .edu-meta { color: var(--muted); font-size: 9.5pt; }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(26, 31, 36, 0.92);
+    }
+
+    .toolbar button {
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border: 0;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .toolbar button:hover { background: #dce8ee; }
+
+    @media print {
+      body { background: none; }
+      .toolbar { display: none; }
+      .page {
+        width: auto;
+        min-height: auto;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        background: #fff;
+      }
+      a { color: inherit; text-decoration: none; }
+      section { break-inside: avoid; }
+      @page { margin: 12mm 14mm; size: A4; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+
+  <article class="page">
+    <header>
+      <h1>Gaston Alejandro Trivi</h1>
+      <p class="title">React Developer · Production Reliability · Real-Time AI Tooling</p>
+      <p class="contact">
+        Olivos, Buenos Aires, Argentina
+        &nbsp;|&nbsp; <a href="mailto:gatrivi.dev@gmail.com">gatrivi.dev@gmail.com</a>
+        &nbsp;|&nbsp; +54 11 5619-9363
+        <br />
+        <a href="https://devtrivi.gatrivi.com">devtrivi.gatrivi.com</a>
+        &nbsp;|&nbsp; <a href="https://linkedin.com/in/gatrivi">linkedin.com/in/gatrivi</a>
+        &nbsp;|&nbsp; <a href="https://github.com/gatrivi">github.com/gatrivi</a>
+      </p>
+    </header>
+
+    <section>
+      <h2>Professional Summary</h2>
+      <p class="summary">
+        Production-focused React developer shipping real-time medical tooling and reliability-first frontends. Built CatIntAssist, a daily-used interpreter workspace emphasizing stability, fault-tolerant API orchestration, and zero-downtime release workflows. Comfortable integrating AI services (Deepgram, Gemini/Google APIs, local LLMs via Ollama/LM Studio) into responsive, accessible UIs.
+      </p>
+    </section>
+
+    <section>
+      <h2>Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-row">
+          <span class="skill-label">Frontend</span>
+          <span class="skill-val">React, TypeScript, Vite, Tailwind CSS, Framer Motion, JavaScript, HTML5, CSS3</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Backend</span>
+          <span class="skill-val">Node.js, Express, REST APIs</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">CI/CD &amp; Infra</span>
+          <span class="skill-val">Git, GitHub Actions, Vercel, Netlify, Docker, Kubernetes</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Reliability</span>
+          <span class="skill-val">Caching, rate-limit handling, rollback planning, safe deploys, incident response</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">AI &amp; Audio</span>
+          <span class="skill-val">Deepgram, Google Translate, Gemini API, Ollama, LM Studio, Piper TTS</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Data &amp; Security</span>
+          <span class="skill-val">kvdb.io, idb-keyval, SHA-256 auth, API hardening</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Remote workflow</span>
+          <span class="skill-val">Tailscale, SSH, AI CLI agents</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Work Experience</h2>
+
+      <div class="job">
+        <div class="job-head">
+          <p class="job-role">Founding Developer &amp; End User <span class="job-co">| CatIntAssist (self-built production tool)</span></p>
+          <p class="job-dates">2024 – Present</p>
+        </div>
+        <ul>
+          <li>Shipped a real-time medical interpreter dashboard used daily in live clinical sessions (transcription → translation → operator workflow).</li>
+          <li>“Zero downtime” mindset: defined session-fatal threshold as app downtime &gt; 3s (interpreters blocked on the line), then designed deploy safeguards and fallbacks around that failure mode.</li>
+          <li>Safe deploy workflow: rolled features in “baby steps” (~3–4 features/day for ~1.5 months) against a prioritized feature doc; 0 breaking releases over 12+ months.</li>
+          <li>Deepgram resilience: when auto language detection failed, ran dual transcription streams (ES/EN) and selected the higher-confidence stream; surfaced 3–4 tentative transcriptions during uncertainty so the interpreter always had usable context.</li>
+          <li>Data cleanup and UX guardrails: de-duplicated identical transcriptions via string comparison; improved pattern detection (e.g., phone numbers) to reduce operator friction.</li>
+          <li>Cost and incident response: cut token spend with narrow prompts; kept a prompt/config bank for outages, reverted to the latest known-working configuration, and patched production from console-log evidence.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <p class="job-role">Web &amp; React Developer <span class="job-co">| Zengasoft</span></p>
+          <p class="job-dates">03/2023 – Present</p>
+        </div>
+        <ul>
+          <li>Built advanced medical intake forms with React conditional logic to reduce input friction and improve data quality.</li>
+          <li>Designed a HIPAA-aligned data/reporting approach for private medical data flows.</li>
+          <li>Migrated to optimized hosting and CI/CD pipelines, reducing page load times by up to 40%.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <p class="job-role">Medical Interpreter <span class="job-co">| Freelance / Contract</span></p>
+          <p class="job-dates">2020 – Present</p>
+        </div>
+        <ul>
+          <li>Bilingual interpretation in high-acuity clinical settings; time-critical translation verification workflows shaped CatIntAssist product requirements.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <p class="job-role">JavaScript Tutor <span class="job-co">| Preply</span></p>
+          <p class="job-dates">10/2022 – Present</p>
+        </div>
+        <ul>
+          <li>Mentored students through advanced JavaScript bootcamps with a production-minded focus on debugging, code quality, and maintainable patterns.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Featured Projects</h2>
+
+      <div class="proj">
+        <p><span class="proj-name">CatIntAssist</span> — <a class="proj-link" href="https://catintassist.gatrivi.com">catintassist.gatrivi.com</a></p>
+        <p class="proj-desc">Real-time medical interpreter workspace: streaming transcription/translation, dual-language workflow, session safeguards.</p>
+      </div>
+
+      <div class="proj">
+        <p><span class="proj-name">Tmm Store</span> — <a class="proj-link" href="https://github.com/gatrivi/Tmm-store">github.com/gatrivi/Tmm-store</a></p>
+        <p class="proj-desc">Zero-backend WhatsApp ordering SPA for SMBs: multi-step menu → cart → checkout with MercadoPago dispatch and secure admin auth.</p>
+      </div>
+
+      <div class="proj">
+        <p><span class="proj-name">Cathedral</span> — <a class="proj-link" href="https://cathedral.gatrivi.com">cathedral.gatrivi.com</a></p>
+        <p class="proj-desc">AI-augmented liturgical prayer companion: always-on Divine Office generator with audio via Google GenAI + Piper TTS.</p>
+      </div>
+
+      <div class="proj">
+        <p><span class="proj-name">CatReader</span> — <a class="proj-link" href="https://github.com/gatrivi/catreader">github.com/gatrivi/catreader</a></p>
+        <p class="proj-desc">Cross-device PDF/TXT reader with zero-auth sync; enrichment pipeline using Gemini OCR and Google Drive.</p>
+      </div>
+
+      <div class="proj">
+        <p><span class="proj-name">Rosario Cards</span> — <a class="proj-link" href="https://rosario.gatrivi.com">rosario.gatrivi.com</a></p>
+        <p class="proj-desc">Interactive digital rosary with guided mysteries (Framer Motion), optimized for offline airplane-mode use.</p>
+      </div>
+
+      <div class="proj">
+        <p><span class="proj-name">Catpholio1</span> — <a class="proj-link" href="https://github.com/gatrivi/Catpholio1">github.com/gatrivi/Catpholio1</a></p>
+        <p class="proj-desc">Multi-route React 19 portfolio engine bundling a product store and white-label landing pages into one deployable package.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      <p class="edu-degree">Full Stack Web Development Bootcamp — Plataforma 5</p>
+      <p class="edu-meta">03/2021 – 05/2021 | 700+ hours, modern PERN-stack application development.</p>
+    </section>
+  </article>
+</body>
+</html>
