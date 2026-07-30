@@ -1,86 +1,68 @@
 Gaston Alejandro Trivi
-React Developer · Medical Interpreter · Production-Shipper
-Location: Olivos, Buenos Aires
-Email: devtrivi@zengasoft.com | gatrivi@gmail.com | Phone: +54 11 5619-9363
-Website: devtrivi.zengasoft.com | LinkedIn: linkedin.com/in/gatrivi | GitHub: github.com/gatrivi
+React Developer · Production Reliability · Real-Time AI Tooling
+Location: Olivos, Buenos Aires, Argentina
+Email: gatrivi.dev@gmail.com | Phone: +54 11 5619-9363
+Website: devtrivi.gatrivi.com | LinkedIn: linkedin.com/in/gatrivi | GitHub: github.com/gatrivi
 
 PROFESSIONAL SUMMARY
-I already knew how to build — this app taught me I could be responsible for production. Skilled React developer and seasoned medical interpreter who builds production-hardened applications. Creator of CatIntAssist, a real-time interpreter workspace used daily to earn a living, driving a ruthless focus on stability, speed, and zero-downtime deployments. Adept at integrating AI APIs, local LLMs, and robust backend services into highly optimized, fault-tolerant UIs. Open for full-stack or frontend roles where reliability and downtime are not an option.
+Production-focused React developer shipping real-time medical tooling and reliability-first frontends. Built CatIntAssist, a daily-used interpreter workspace emphasizing stability, fault-tolerant API orchestration, and zero-downtime release workflows. Comfortable integrating AI services (Deepgram, Gemini/Google APIs, local LLMs via Ollama/LM Studio) into responsive, accessible UIs.
 
-SKILLS (ATS KEYWORDS)
-React 19 | TypeScript | Vite 6 | Tailwind CSS v4 | Framer Motion | HTML5/CSS3
-Node.js | REST APIs | Express | FastAPI | Deepgram | Google Translate
-Gemini API | (Local LLMs) Ollama | LM Studio | Qwen Coder
-TTS/STT: Deepgram | Whisper | Kokoro | XTTS | Piper | Omnivoice
-CI/CD | Git/GitHub Actions | Vercel | Netlify | Docker
-Data/Cache: Firebase | kvdb.io | idb-keyval
-Security/auth: SHA-256 auth | API key gates | rate-limit handling
-Remote workflows: Tailscale | SSH/Termius | AI CLI agents
+SKILLS
+Frontend: React, TypeScript, Vite, Tailwind CSS, Framer Motion, JavaScript, HTML5, CSS3
+Backend: Node.js, Express, REST APIs
+CI/CD & Infra: Git, GitHub Actions, Vercel, Netlify, Docker, Kubernetes
+Reliability: Caching, rate-limit handling, rollback planning, safe deploys, incident response
+AI & Audio: Deepgram, Google Translate, Gemini API, Ollama, LM Studio, Piper TTS
+Data & Security: kvdb.io, idb-keyval, SHA-256 auth, API hardening
+Remote workflow: Tailscale, SSH, AI CLI agents
 
 WORK EXPERIENCE
-Founding Developer & End User — CatIntAssist (Self-built Production Tool)
-Olivos, Buenos Aires | 2024 — Present
+Founding Developer & End User — CatIntAssist (self-built production tool)
+2024 – Present
 
-Production Engineering: Built and shipped a real-time medical interpreter dashboard (v4.84+) used daily in live clinical sessions; downtime equals lost income.
-Audio Routing: Tab-share, mic, and VB-Cable virtual-cable modes with live STT mode toggle and audio-route status/reconnect controls under call pressure.
-Zero-Downtime Deployments: Small atomic changes + rollback plans; seal-in-place transcript continuity so live text does not remount/void mid-session.
-Incident Response & API Management: End-to-end incidents across transcription → translation (dropouts, fallback cascades) without a dedicated ops team; Deepgram/Google Translate cost and rate-limit discipline.
-UX Iteration Under Pressure: Debugged during active interpreting calls, distinguishing cosmetic issues vs. session-fatal failures.
+Shipped a real-time medical interpreter dashboard used daily in live clinical sessions (transcription → translation → operator workflow).
+“Zero downtime” mindset: defined session-fatal threshold as app downtime > 3s (interpreters blocked on the line), then designed deploy safeguards and fallbacks around that failure mode.
+Safe deploy workflow: rolled features in “baby steps” (~3–4 features/day for ~1.5 months) against a prioritized feature doc; 0 breaking releases over 12+ months.
+Deepgram resilience: when auto language detection failed, ran dual transcription streams (ES/EN) and selected the higher-confidence stream; surfaced 3–4 tentative transcriptions during uncertainty so the interpreter always had usable context.
+Data cleanup and UX guardrails: de-duplicated identical transcriptions via string comparison; improved pattern detection (e.g., phone numbers) to reduce operator friction.
+Cost and incident response: cut token spend with narrow prompts; kept a prompt/config bank for outages, reverted to the latest known-working configuration, and patched production from console-log evidence.
+
 Web & React Developer — Zengasoft
 03/2023 – Present
 
-Built advanced medical intake forms and questionnaires using React dynamic conditional logic to improve input accuracy and reduce intake friction.
-Architecture & Security: Architected HIPAA-compliant data infrastructure and reporting for private medical data.
-Performance & Delivery: Migrated to optimized hosting + configured CI/CD pipelines, reducing page load times by up to 40%.
-Medical Interpreter (Freelance / Contract)
-2020 — Present
+Built advanced medical intake forms with React conditional logic to reduce input friction and improve data quality.
+Designed a HIPAA-aligned data/reporting approach for private medical data flows.
+Migrated to optimized hosting and CI/CD pipelines, reducing page load times by up to 40%.
 
-Provided bilingual medical interpretation in high-acuity clinical settings, with strong familiarity in medical terminology and HIPAA-adjacent workflows.
-Leveraged daily workflow realities (tab juggling, billable-time tracking, translation verification under time pressure) to directly shape CatIntAssist product requirements.
-Javascript Tutor — Preply
+Medical Interpreter — Freelance / Contract
+2020 – Present
+
+Bilingual interpretation in high-acuity clinical settings; time-critical translation verification workflows shaped CatIntAssist product requirements.
+
+JavaScript Tutor — Preply
 10/2022 – Present
 
-Mentored students through advanced JS bootcamps and supported career outcomes by focusing on production-minded debugging and code quality.
+Mentored students through advanced JavaScript bootcamps with a production-minded focus on debugging, code quality, and maintainable patterns.
 
 FEATURED PROJECTS
-CatIntAssist — GitHub: github.com/gatrivi/catintassist (v4.84+)
-AI-powered medical interpreter workspace (daily production use)
+CatIntAssist — catintassist.gatrivi.com
+Real-time medical interpreter workspace: streaming transcription/translation, dual-language workflow, session safeguards.
 
-Real-time bilingual EN↔ES captions, sticky follow, productivity/earnings tracking.
-Audio capture: tab / mic / VB-Cable routing + reconnect diagnostics for live calls.
-Mission-critical tooling: hold timers, number protection, HIPAA-aware purge patterns, duplicate suppression.
-Tmm Store / Trufi — GitHub: github.com/gatrivi/Tmm-store (v1.5+)
-White-label SMB ordering SPA (PedidoDirecto-style)
+Tmm Store — github.com/gatrivi/Tmm-store
+Zero-backend WhatsApp ordering SPA for SMBs: multi-step menu → cart → checkout with MercadoPago dispatch and secure admin auth.
 
-Three product tiers (Menu / Pedidos / Premium): digital menu → cart → checkout with WhatsApp dispatch + MercadoPago.
-Sale-ready Menu tier: appearance/white-label branding, admin CRUD, SHA-256 auth, leads/ops routines.
-CatTS — GitHub: github.com/gatrivi/catts (v0.7+)
-Local audiobook + voice-clone stack (CPU/AMD, no NVIDIA required)
+Cathedral — cathedral.gatrivi.com
+AI-augmented liturgical prayer companion: always-on Divine Office generator with audio via Google GenAI + Piper TTS.
 
-Two-flow UX: book pipeline (PDF/EPUB/DOCX/TXT → chapters → TTS library) and voice samples with STT script-match scoring.
-Live interpreting TTS (XTTS clone) + Kokoro fast local TTS; Whisper STT + Argos offline EN↔ES; FastAPI + job polling.
-Rosario Cards — GitHub: github.com/gatrivi/Rosario-cards-v1 (v0.3.50+)
-Visual-first digital rosary (mobile-first, offline-friendly)
+CatReader — github.com/gatrivi/catreader
+Cross-device PDF/TXT reader with zero-auth sync; enrichment pipeline using Gemini OCR and Google Drive.
 
-Interactive bead graph (constraint layout, pinch-zoom, decade boundary beads) + hold-to-charge prayer UX.
-Devotions shelf, pilgrimage progress, generative rose garden; Framer Motion–driven tactile meditation UI.
-CatReader — GitHub: github.com/gatrivi/catreader
-Cross-device PDF & TXT reader with zero-auth sync
+Rosario Cards — rosario.gatrivi.com
+Interactive digital rosary with guided mysteries (Framer Motion), optimized for offline airplane-mode use.
 
-Progress sync across devices via kvdb.io (no login).
-AI enrichment pipeline using Gemini OCR + Google Drive integration.
-Cathedral — GitHub: github.com/gatrivi/cathedral
-AI-augmented liturgical prayer companion
-
-Always-on Divine Office that generates prayers and audio per canonical hour using Google GenAI + Piper TTS.
-Focus mode + ambient soundscapes + sacred art visuals.
-Catpholio1 — GitHub: github.com/gatrivi/Catpholio1
-Multi-route developer portfolio engine
-
-Multi-route React 19 SPA that runs a product store and hosts white-label landing pages in one deployable package.
+Catpholio1 — github.com/gatrivi/Catpholio1
+Multi-route React 19 portfolio engine bundling a product store and white-label landing pages into one deployable package.
 
 EDUCATION
 Full Stack Web Development Bootcamp — Plataforma 5
-03/2021 – 05/2021
-
-700+ hour program covering modern PERN stack application development.
+03/2021 – 05/2021 | 700+ hours, modern PERN-stack application development.

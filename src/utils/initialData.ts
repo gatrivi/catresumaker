@@ -1,92 +1,180 @@
 import { ResumeData } from "../types.ts";
 
+/** Canonical Jul-2026 CV — sourced from resume.md / RESUME_DEV.html */
 export const SAMPLE_RESUME: ResumeData = {
-  id: "profile-1",
-  label: "Software Engineer Profile",
+  id: "profile-jul2026",
+  label: "Dev CV Jul 2026",
   updatedAt: new Date().toISOString(),
   personalInfo: {
-    name: "Alex Sterling",
-    title: "Senior Full-Stack Engineer",
-    email: "alex.sterling@devmail.com",
-    phone: "(555) 342-9981",
-    website: "https://sterling-dev.io",
-    location: "San Francisco, CA",
-    summary: "Driven Full-Stack Engineer with 5+ years of experience specializing in high-scale React, Node.js microservices, and automated Cloud native environments. Passionate about system latency optimization and crafting fluid, accessible user interfaces."
+    name: "Gaston Alejandro Trivi",
+    title: "React Developer · Production Reliability · Real-Time AI Tooling",
+    email: "gatrivi.dev@gmail.com",
+    phone: "+54 11 5619-9363",
+    website: "devtrivi.gatrivi.com",
+    location: "Olivos, Buenos Aires, Argentina",
+    summary:
+      "Production-focused React developer shipping real-time medical tooling and reliability-first frontends. Built CatIntAssist, a daily-used interpreter workspace emphasizing stability, fault-tolerant API orchestration, and zero-downtime release workflows. Comfortable integrating AI services (Deepgram, Gemini/Google APIs, local LLMs via Ollama/LM Studio) into responsive, accessible UIs."
   },
   education: [
     {
       id: "edu-1",
-      institution: "State University of California",
-      degree: "B.S. in Computer Science & Engineering",
-      location: "Double Major with Honors",
-      dates: "2016 - 2020",
-      description: "GPA: 3.85/4.0. Core areas: Algorithms, Distributed Systems, Compiler Design."
+      institution: "Plataforma 5",
+      degree: "Full Stack Web Development Bootcamp",
+      location: "",
+      dates: "03/2021 – 05/2021",
+      description: "700+ hours, modern PERN-stack application development."
     }
   ],
   experience: [
     {
       id: "exp-1",
-      company: "InnovateTech Solutions",
-      title: "Senior Software Engineer",
-      location: "San Francisco, CA",
-      dates: "Jan 2022 - Present",
+      company: "CatIntAssist (self-built production tool)",
+      title: "Founding Developer & End User",
+      location: "Olivos, Buenos Aires · Remote",
+      dates: "2024 – Present",
       bullets: [
-        "Architected core asynchronous search indexes in Node.js, reducing global query latency by 42% for over 2M active monthly users.",
-        "Led a frontend migration of 14 complex client dashboards to React 18, enhancing accessibility compliance scores from 74% to 99%.",
-        "Mentored 4 mid-level engineers on state-management patterns, CI/CD pipelines, and writing robust integration tests.",
-        "Formulated customizable container orchestration recipes in Kubernetes, cutting deployment warm-up times by 15%."
+        "Shipped a real-time medical interpreter dashboard used daily in live clinical sessions (transcription → translation → operator workflow).",
+        "“Zero downtime” mindset: defined session-fatal threshold as app downtime > 3s (interpreters blocked on the line), then designed deploy safeguards and fallbacks around that failure mode.",
+        "Safe deploy workflow: rolled features in “baby steps” (~3–4 features/day for ~1.5 months) against a prioritized feature doc; 0 breaking releases over 12+ months.",
+        "Deepgram resilience: when auto language detection failed, ran dual transcription streams (ES/EN) and selected the higher-confidence stream; surfaced 3–4 tentative transcriptions during uncertainty so the interpreter always had usable context.",
+        "Data cleanup and UX guardrails: de-duplicated identical transcriptions via string comparison; improved pattern detection (e.g., phone numbers) to reduce operator friction.",
+        "Cost and incident response: cut token spend with narrow prompts; kept a prompt/config bank for outages, reverted to the latest known-working configuration, and patched production from console-log evidence."
       ],
       current: true
     },
     {
       id: "exp-2",
-      company: "CloudBound Systems",
-      title: "Full-Stack Developer",
-      location: "Austin, TX",
-      dates: "June 2020 - Dec 2021",
+      company: "Zengasoft",
+      title: "Web & React Developer",
+      location: "Remote",
+      dates: "03/2023 – Present",
       bullets: [
-        "Designed and maintained 12+ persistent RESTful API endpoints utilizing Express.js, handling over 140,000 hourly transactions securely.",
-        "Integrated third-party payment processing microservices via Stripe, resulting in a streamlined checkout funnel and a 12% boost in conversions.",
-        "Implemented Redis caching strategies for database calls, dropping recurrent server memory spikes by 30% during traffic surges."
+        "Built advanced medical intake forms with React conditional logic to reduce input friction and improve data quality.",
+        "Designed a HIPAA-aligned data/reporting approach for private medical data flows.",
+        "Migrated to optimized hosting and CI/CD pipelines, reducing page load times by up to 40%."
       ],
-      current: false
+      current: true
+    },
+    {
+      id: "exp-3",
+      company: "Freelance / Contract",
+      title: "Medical Interpreter",
+      location: "Remote",
+      dates: "2020 – Present",
+      bullets: [
+        "Bilingual interpretation in high-acuity clinical settings; time-critical translation verification workflows shaped CatIntAssist product requirements."
+      ],
+      current: true
+    },
+    {
+      id: "exp-4",
+      company: "Preply",
+      title: "JavaScript Tutor",
+      location: "Remote",
+      dates: "10/2022 – Present",
+      bullets: [
+        "Mentored students through advanced JavaScript bootcamps with a production-minded focus on debugging, code quality, and maintainable patterns."
+      ],
+      current: true
     }
   ],
   projects: [
     {
       id: "proj-1",
-      name: "Omni-Query Analytics",
-      description: "Enterprise data visualization and metric aggregation portal.",
-      technologies: ["React", "TypeScript", "D3.js", "Express", "TailwindCSS"],
-      bullets: [
-        "Constructed custom D3 charting extensions to render real-time telemetry pipelines containing up to 50,000 data points smoothly.",
-        "Structured a fluid, fully secure API proxy pipeline utilizing Express to protect external database keys and eliminate CORS bottlenecks."
-      ],
-      url: "https://github.com/alex-sterling/omni-query"
+      name: "CatIntAssist",
+      description:
+        "Real-time medical interpreter workspace: streaming transcription/translation, dual-language workflow, session safeguards.",
+      technologies: ["React", "TypeScript", "Node.js", "Deepgram", "Gemini"],
+      bullets: [],
+      url: "https://catintassist.gatrivi.com"
+    },
+    {
+      id: "proj-2",
+      name: "Tmm Store",
+      description:
+        "Zero-backend WhatsApp ordering SPA for SMBs: multi-step menu → cart → checkout with MercadoPago dispatch and secure admin auth.",
+      technologies: ["React", "WhatsApp", "MercadoPago"],
+      bullets: [],
+      url: "https://github.com/gatrivi/Tmm-store"
+    },
+    {
+      id: "proj-3",
+      name: "Cathedral",
+      description:
+        "AI-augmented liturgical prayer companion: always-on Divine Office generator with audio via Google GenAI + Piper TTS.",
+      technologies: ["React", "Google GenAI", "Piper TTS"],
+      bullets: [],
+      url: "https://cathedral.gatrivi.com"
+    },
+    {
+      id: "proj-4",
+      name: "CatReader",
+      description:
+        "Cross-device PDF/TXT reader with zero-auth sync; enrichment pipeline using Gemini OCR and Google Drive.",
+      technologies: ["React", "kvdb.io", "Gemini OCR"],
+      bullets: [],
+      url: "https://github.com/gatrivi/catreader"
+    },
+    {
+      id: "proj-5",
+      name: "Rosario Cards",
+      description:
+        "Interactive digital rosary with guided mysteries (Framer Motion), optimized for offline airplane-mode use.",
+      technologies: ["React", "Framer Motion"],
+      bullets: [],
+      url: "https://rosario.gatrivi.com"
+    },
+    {
+      id: "proj-6",
+      name: "Catpholio1",
+      description:
+        "Multi-route React 19 portfolio engine bundling a product store and white-label landing pages into one deployable package.",
+      technologies: ["React 19", "TypeScript"],
+      bullets: [],
+      url: "https://github.com/gatrivi/Catpholio1"
     }
   ],
   skills: [
     {
       id: "skill-1",
-      category: "Languages",
-      items: ["TypeScript", "JavaScript (ES6+)", "Python", "SQL (PostgreSQL)", "HTML5/CSS3"]
+      category: "Frontend",
+      items: ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion", "JavaScript", "HTML5", "CSS3"]
     },
     {
       id: "skill-2",
-      category: "Frameworks & UI",
-      items: ["React", "Express.js", "Node.js", "Tailwind CSS", "Next.js", "Redux Toolkit"]
+      category: "Backend",
+      items: ["Node.js", "Express", "REST APIs"]
     },
     {
       id: "skill-3",
-      category: "DevOps & Tools",
-      items: ["Docker", "Kubernetes", "AWS (S3, EC2)", "Git/GitHub Actions", "Jest", "Vite"]
+      category: "CI/CD & Infra",
+      items: ["Git", "GitHub Actions", "Vercel", "Netlify", "Docker", "Kubernetes"]
+    },
+    {
+      id: "skill-4",
+      category: "Reliability",
+      items: ["Caching", "rate-limit handling", "rollback planning", "safe deploys", "incident response"]
+    },
+    {
+      id: "skill-5",
+      category: "AI & Audio",
+      items: ["Deepgram", "Google Translate", "Gemini API", "Ollama", "LM Studio", "Piper TTS"]
+    },
+    {
+      id: "skill-6",
+      category: "Data & Security",
+      items: ["kvdb.io", "idb-keyval", "SHA-256 auth", "API hardening"]
+    },
+    {
+      id: "skill-7",
+      category: "Remote workflow",
+      items: ["Tailscale", "SSH", "AI CLI agents"]
     }
   ],
-  languages: ["English (Native)", "Spanish (Conversational)"],
-  certifications: ["AWS Certified Solutions Architect", "Scrum Alliance Certified Developer"]
+  languages: ["English (C2)", "Spanish (native)"],
+  certifications: []
 };
 
-// Simple templates
 export const TEMPLATES = [
   { id: "ats-classic", name: "ATS Classic", description: "Standard, clean single-column structure optimized to score maximum readability on screening bots." },
   { id: "modern-serif", name: "Modern Editorial", description: "Elegant serif display headers and spacious columns for a polished editorial layout." },

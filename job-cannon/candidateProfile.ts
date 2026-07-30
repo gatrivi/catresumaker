@@ -26,7 +26,7 @@ export const candidateProfile: CandidateProfile = {
   location: "Olivos, Buenos Aires, Argentina",
   linkedin: "https://linkedin.com/in/gatrivi",
   github: "https://github.com/gatrivi",
-  portfolio: "https://devtrivi.zengasoft.com",
+  portfolio: "https://devtrivi.gatrivi.com",
   currentCompany: "Independent React Developer / Freelance Contractor",
   desiredSalary: "USD 36,000–42,000 / year, flexible depending on scope and benefits",
   desiredSalaryIfForcedNumber: "USD 36,000 / year",

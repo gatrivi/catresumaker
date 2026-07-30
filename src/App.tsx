@@ -43,7 +43,21 @@ export default function App() {
   // Persistence with local storage
   const [resume, setResume] = useState<ResumeData>(() => {
     const saved = localStorage.getItem("catresumaker_resume");
-    return saved ? JSON.parse(saved) : SAMPLE_RESUME;
+    if (!saved) return SAMPLE_RESUME;
+    try {
+      const parsed = JSON.parse(saved) as ResumeData;
+      // ponytail: one-shot migrate stale local defaults to Jul-2026 CV
+      if (
+        parsed?.personalInfo?.title === "React Developer · Medical Interpreter · Production-Shipper" ||
+        parsed?.id === "profile-1"
+      ) {
+        localStorage.setItem("catresumaker_resume", JSON.stringify(SAMPLE_RESUME));
+        return SAMPLE_RESUME;
+      }
+      return parsed;
+    } catch {
+      return SAMPLE_RESUME;
+    }
   });
 
   const [logs, setLogs] = useState<WorkLogEntry[]>(() => {
@@ -200,12 +214,16 @@ export default function App() {
     }, 2500);
 
     try {
+      console.log("[CatResumeMaker] calling /api/health");
       const res = await fetch("/api/health");
+      console.log("[CatResumeMaker] /api/health status", res.status);
       const data = await res.json();
+      console.log("[CatResumeMaker] /api/health payload", data);
       const endTime = performance.now();
       setConnectionLatency(Math.round(endTime - startTime));
       setApiConnected(data.hasApiKey);
     } catch {
+      console.warn("[CatResumeMaker] /api/health failed (fetch/JSON)");
       setApiConnected(false);
       setConnectionLatency(null);
     } finally {
@@ -216,6 +234,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    console.log("[CatResumeMaker] verifySystemConnectivity() effect firing");
     verifySystemConnectivity();
   }, []);
 
