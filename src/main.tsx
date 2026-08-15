@@ -2,10 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { AuthProvider } from "./auth/AuthContext";
+import { installCrmBridge } from "./job-os/crmBridge";
 import "./index.css";
 import { loadLang, saveLang } from "./utils/lang";
 
 saveLang(loadLang());
+installCrmBridge();
 
 console.log("[CatResumeMaker] main.tsx loaded", {
   href: window.location.href,
